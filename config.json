@@ -1,0 +1,553 @@
+{
+
+  "dbConnection": {
+    "service_name": "PUBL.katastr.int",
+    "port": "1521",
+    "host": "195.245.209.130",
+    "username": "APL_ATOM",
+    "password": "frokD27xtY69de"
+  },
+
+  "repository": {
+    "localRepository": "G:\\Feeds\\",
+    "webPath": "http://a200034.katastr.int/Atom/Feeds",
+    "tempRepository": "G:\\temp\\"
+  },
+
+  "customFeed": [
+    {
+      "fileName": "inspire",
+      "title": "Stahovací služby INSPIRE témat poskytovaných ČÚZK",
+      "serviceCodes":[
+        {"code": "AU"},
+        {"code": "AD"},
+        {"code": "CP"},
+        {"code": "BU"}
+      ]
+    },
+    {
+      "fileName": "ruian_specialni",
+      "title": "Stahovací služby speciálních dat RÚIAN",
+      "serviceCodes":[
+        {"code": "RUIAN-SP-CIS-U"},
+        {"code": "RUIAN-SP-VO-U"}
+      ]
+    },
+    {
+      "fileName": "ruian_soucasna",
+      "title": "Stahovací služby současných dat RÚIAN",
+      "serviceCodes":[
+        {"code": "RUIAN-S-K-U"},
+        {"code": "RUIAN-S-K-Z"},
+        {"code": "RUIAN-S-ZA-U"},
+        {"code": "RUIAN-S-ZA-Z"}
+      ]
+    },
+    {
+      "fileName": "ruian_historicka",
+      "title": "Stahovací služby historických dat RÚIAN",
+      "serviceCodes":[
+        {"code": "RUIAN-H-ZA-U"},
+        {"code": "RUIAN-H-ZA-Z"}
+      ]
+    },
+    {
+      "fileName": "ruian_csv",
+      "title": "Stahovací služby dat RÚIAN ve formátu csv",
+      "serviceCodes":[
+        {"code": "RUIAN-CSV-ADR-OB"},
+        {"code": "RUIAN-CSV-ADR-ST"},
+        {"code": "RUIAN-CSV-HIE-ST"}
+      ]
+    },
+    {
+      "fileName": "km",
+      "title": "Stahovací služby pro Katastrální mapu ČR",
+      "serviceCodes":[
+        {"code": "KM-KU-VFK"},
+        {"code": "KM-KU-SHP"},
+        {"code": "KM-KU-VKM"},
+        {"code": "KM-KP-VFK"}
+      ]
+    },
+    {
+      "fileName": "gp",
+      "title": "Stahovací služby pro zplatněné geometrické plány",
+      "serviceCodes":[
+        {"code": "GMPL-KU-VFK"},
+        {"code": "GMPL-KP-VFK"}
+      ]
+    }
+  ],
+
+  "downloadService": [
+    {
+      "name": "AD",
+      "code": "AD",
+      "sources": [
+        {
+          "dirPath": "N:\\GML\\inspire\\ad\\epsg-5514\\",
+          "webPath": "http://services.cuzk.cz/gml/inspire/ad/epsg-5514",
+          "epsg": "5514",
+          "unit_type": "obec",
+          "format": "GML",
+          "georss_type": "point"
+        },
+        {
+          "dirPath": "N:\\GML\\inspire\\ad\\epsg-4258\\",
+          "webPath": "http://services.cuzk.cz/gml/inspire/ad/epsg-4258",
+          "epsg": "4258",
+          "unit_type": "obec",
+          "format": "GML",
+          "georss_type": "point"
+        }
+      ]
+    },
+    {
+      "name": "CP",
+      "code": "CP",
+      "sources": [
+        {
+          "dirPath": "N:\\GML\\inspire\\cp\\epsg-5514\\",
+          "webPath": "http://services.cuzk.cz/gml/inspire/cp/epsg-5514",
+          "epsg": "5514",
+          "unit_type": "ku",
+          "format": "GML",
+          "georss_type": "polygon"
+        },
+        {
+          "dirPath": "N:\\GML\\inspire\\cp\\epsg-4258\\",
+          "webPath": "http://services.cuzk.cz/gml/inspire/cp/epsg-4258",
+          "epsg": "4258",
+          "unit_type": "ku",
+          "format": "GML",
+          "georss_type": "polygon"
+        }
+      ]
+    },
+    {
+      "name": "AU",
+      "code": "AU",
+      "sources": [
+        {
+          "dirPath": "N:\\GML\\inspire\\au\\epsg-5514\\",
+          "webPath": "http://services.cuzk.cz/gml/inspire/au/epsg-5514",
+          "epsg": "5514",
+          "unit_type": "stat",
+          "format": "GML",
+          "georss_type": "polygon"
+        },
+        {
+          "dirPath": "N:\\GML\\inspire\\au\\epsg-4258\\",
+          "webPath": "http://services.cuzk.cz/gml/inspire/au/epsg-4258",
+          "epsg": "4258",
+          "unit_type": "stat",
+          "format": "GML",
+          "georss_type": "polygon"
+        }
+      ]
+    },
+    {
+      "name": "BU",
+      "code": "BU",
+      "sources": [
+        {
+          "dirPath": "N:\\GML\\inspire\\bu\\epsg-5514\\",
+          "webPath": "http://services.cuzk.cz/gml/inspire/bu/epsg-5514",
+          "epsg": "5514",
+          "unit_type": "obec",
+          "format": "GML",
+          "georss_type": "polygon"
+        },
+        {
+          "dirPath": "N:\\GML\\inspire\\bu\\epsg-4258\\",
+          "webPath": "http://services.cuzk.cz/gml/inspire/bu/epsg-4258",
+          "epsg": "4258",
+          "unit_type": "obec",
+          "format": "GML",
+          "georss_type": "polygon"
+        }
+      ]
+    },
+    {
+      "name": "KM-KP-VFK",
+      "code": "KM-KP-VFK",
+      "sources": [
+        {
+          "dirPath": "N:\\VFK\\kp\\",
+          "webPath": "http://services.cuzk.cz/vfk/kp",
+          "epsg": "5514",
+          "unit_type": "kp",
+          "format": "VFK",
+          "georss_type": "polygon"
+        }
+      ]
+    },
+    {
+      "name": "KM-KU-VFK",
+      "code": "KM-KU-VFK",
+      "sources": [
+        {
+          "dirPath": "N:\\VFK\\ku\\",
+          "webPath": "http://services.cuzk.cz/vfk/ku",
+          "epsg": "5514",
+          "unit_type": "ku",
+          "format": "VFK",
+          "georss_type": "polygon"
+        }
+      ]
+    },
+    {
+      "name": "KM-KU-VKM",
+      "code": "KM-KU-VKM",
+      "sources": [
+        {
+          "dirPath": "N:\\VKM\\ku\\",
+          "webPath": "http://services.cuzk.cz/vkm/ku",
+          "epsg": "5514",
+          "unit_type": "ku",
+          "format": "VKM",
+          "georss_type": "polygon"
+        },
+        {
+          "dirPath": "N:\\VKM\\ku_zdroje\\",
+          "webPath": "http://services.cuzk.cz/vkm/ku_zdroje",
+          "epsg": "stabilni_katastr",
+          "unit_type": "ku",
+          "format": "VKM",
+          "georss_type": "polygon"
+        }
+      ]
+    },
+    {
+      "name": "KM-KU-SHP",
+      "code": "KM-KU-SHP",
+      "sources": [
+        {
+          "dirPath": "N:\\SHP\\ku\\",
+          "webPath": "http://services.cuzk.cz/shp/ku",
+          "epsg": "5514",
+          "unit_type": "ku",
+          "format": "SHP",
+          "georss_type": "polygon"
+        }
+      ]
+    },
+    {
+      "name": "GMPL-KP-VFK",
+      "code": "GMPL-KP-VFK",
+      "sources": [
+        {
+          "dirPath": "N:\\VFK-GMPL\\kp\\",
+          "webPath": "http://services.cuzk.cz/vfk-gmpl/kp",
+          "epsg": "5514",
+          "unit_type": "kp",
+          "format": "VFK",
+          "georss_type": "polygon"
+        }
+      ]
+    },
+    {
+      "name": "GMPL-KU-VFK",
+      "code": "GMPL-KU-VFK",
+      "sources": [
+        {
+          "dirPath": "N:\\VFK-GMPL\\ku\\",
+          "webPath": "http://services.cuzk.cz/vfk-gmpl/ku",
+          "epsg": "5514",
+          "unit_type": "ku",
+          "format": "VFK",
+          "georss_type": "polygon"
+        }
+      ]
+    },
+    {
+      "name": "soucasna zmenova data RUIAN - kompletni datova sada",
+      "code": "RUIAN-S-K-Z",
+      "sources": [
+        {
+          "dirPath": "Z:\\vymenny_format\\soucasna\\",
+          "webPath": "http://vdp.cuzk.cz/vymenny_format/soucasna",
+          "epsg": "5514",
+          "unit_type": "stat",
+          "format": "VFR",
+          "georss_type": "polygon"
+        }
+      ]
+    },
+    {
+      "name": "soucasna stavova data RUIAN - kompletni datova sada",
+      "code": "RUIAN-S-K-U",
+      "sources": [
+        {
+          "dirPath": "Z:\\vymenny_format\\soucasna\\",
+          "webPath": "http://vdp.cuzk.cz/vymenny_format/soucasna",
+          "epsg": "5514",
+          "unit_type": "obec",
+          "format": "VFR",
+          "georss_type": "polygon"
+        }
+      ]
+    },
+    {
+      "name": "soucasna zmenova data RUIAN - zakladni datova sada",
+      "code": "RUIAN-S-ZA-Z",
+      "sources": [
+        {
+          "dirPath": "Z:\\vymenny_format\\soucasna\\",
+          "webPath": "http://vdp.cuzk.cz/vymenny_format/soucasna",
+          "epsg": "5514",
+          "unit_type": "stat",
+          "format": "VFR",
+          "georss_type": "polygon"
+        }
+      ]
+    },
+    {
+      "name": "soucasna stavova data RUIAN - zakladni datova sada",
+      "code": "RUIAN-S-ZA-U",
+      "sources": [
+        {
+          "dirPath": "Z:\\vymenny_format\\soucasna\\",
+          "webPath": "http://vdp.cuzk.cz/vymenny_format/soucasna",
+          "epsg": "5514",
+          "unit_type": "obec",
+          "format": "VFR",
+          "georss_type": "polygon"
+        }
+      ]
+    },
+    {
+      "name": "historicka zmenova data RUIAN - zakladni datova sada",
+      "code": "RUIAN-H-ZA-Z",
+      "sources": [
+        {
+          "dirPath": "Z:\\vymenny_format\\historicka\\",
+          "webPath": "http://vdp.cuzk.cz/vymenny_format/historicka",
+          "epsg": "5514",
+          "unit_type": "stat",
+          "format": "VFR",
+          "georss_type": "polygon"
+        }
+      ]
+    },
+    {
+      "name": "historicka stavova data RUIAN - zakladni datova sada",
+      "code": "RUIAN-H-ZA-U",
+      "sources": [
+        {
+          "dirPath": "Z:\\vymenny_format\\historicka\\",
+          "webPath": "http://vdp.cuzk.cz/vymenny_format/historicka",
+          "epsg": "5514",
+          "unit_type": "obec",
+          "format": "VFR",
+          "georss_type": "polygon"
+        }
+      ]
+    },
+    {
+      "name": "specialni stavova data RUIAN - ciselniky",
+      "code": "RUIAN-SP-CIS-U",
+      "sources": [
+        {
+          "dirPath": "Z:\\vymenny_format\\specialni\\",
+          "webPath": "http://vdp.cuzk.cz/vymenny_format/specialni",
+          "epsg": "5514",
+          "unit_type": "stat",
+          "format": "VFR",
+          "georss_type": "polygon"
+        }
+      ]
+    },
+    {
+      "name": "specialni stavova data RUIAN - volebni okrsky",
+      "code": "RUIAN-SP-VO-U",
+      "sources": [
+        {
+          "dirPath": "Z:\\vymenny_format\\specialni\\",
+          "webPath": "http://vdp.cuzk.cz/vymenny_format/specialni",
+          "epsg": "5514",
+          "unit_type": "stat",
+          "format": "VFR",
+          "georss_type": "polygon"
+        }
+      ]
+    },
+    {
+      "name": "RUIAN csv - adresy obce",
+      "code": "RUIAN-CSV-ADR-OB",
+      "sources": [
+        {
+          "dirPath": "Z:\\vymenny_format\\csv\\",
+          "webPath": "http://vdp.cuzk.cz/vymenny_format/csv",
+          "epsg": "5514",
+          "unit_type": "obec",
+          "format": "VFR",
+          "georss_type": "polygon"
+        }
+      ]
+    },
+    {
+      "name": "RUIAN csv - adresy stat",
+      "code": "RUIAN-CSV-ADR-ST",
+      "sources": [
+        {
+          "dirPath": "Z:\\vymenny_format\\csv\\",
+          "webPath": "http://vdp.cuzk.cz/vymenny_format/csv",
+          "epsg": "5514",
+          "unit_type": "stat",
+          "format": "VFR",
+          "georss_type": "polygon"
+        }
+      ]
+    },
+    {
+      "name": "RUIAN csv - hierarchie stat",
+      "code": "RUIAN-CSV-HIE-ST",
+      "sources": [
+        {
+          "dirPath": "Z:\\vymenny_format\\csv\\",
+          "webPath": "http://vdp.cuzk.cz/vymenny_format/csv",
+          "epsg": "5514",
+          "unit_type": "stat",
+          "format": "VFR",
+          "georss_type": "polygon"
+        }
+      ]
+    }
+  ],
+
+  "tables": [
+    {
+      "type": "service",
+      "tableName": "atom_services",
+      "columns": {
+        "service_id":"service_id",
+        "updated": "last_update",
+        "id": "feed_id",
+        "author_name": "author_name",
+        "author_uri": "author_uri",
+        "author_email": "author_email",
+        "title": "title",
+        "subtitle": "subtitle",
+        "summary": "feed_summary",
+        "metadata_link": "metadata_link",
+        "opensearch_link": "opensearch_link",
+        "contributor": "contributor",
+        "generator": "generator",
+        "icon": "icon",
+        "logo": "logo"
+      }
+    },
+    {
+      "type": "datasets",
+      "tableName": "atom_dataset",
+      "columns": {
+        "service_id": "service_id",
+        "id": "feed_id",
+        "updated": "last_update",
+        "title": "title",
+        "subtitle": "subtitle",
+        "metadata_link": "metadata_link",
+        "spatial_dataset_identifier_code": "inspire_dls_code",
+        "spatial_dataset_identifier_namespace": "inpsire_dls_namespace",
+        "contributor": "contributor",
+        "generator": "generator",
+        "icon": "icon",
+        "logo": "logo"
+      }
+    },
+    {
+      "type": "files",
+      "tableName": "atom_files",
+      "columns": {
+        "file_name": "file_name",
+        "file_extension": "file_extension",
+        "file_size": "file_size",
+        "unit_code": "unit_code",
+        "unit_type": "unit_type",
+        "updated": "last_update",
+        "spatial_dataset_identifier_code": "inspire_dls_code",
+        "service_id": "service_id",
+        "crs_epsg": "crs_epsg",
+        "georss_type": "georss_type",
+        "metadata_link": "metadata_link",
+        "web_path": "web_path",
+        "format": "format",
+        "file_id": "file_id"
+      }
+    },
+    {
+      "type": "metadata",
+      "tableName": "atom_metadata",
+      "columns": {
+        "spatial_dataset_identifier_code": "inspire_dls_code",
+        "operace": "operace",
+        "datum_vlozeni": "datum_vlozeni",
+        "datum_publikace": "datum_publikace",
+        "id": "id",
+        "stav": "stav"
+      }
+    },
+    {
+      "type": "publikace",
+      "tableName": "atom_stav_publikace",
+      "columns": {
+        "service_id": "service_id",
+        "datum_publikace": "datum_publikace",
+        "datum_aktualizace_databaze": "datum_aktualizace_db"
+      }
+    },
+    {
+      "type": "abstrakt",
+      "tableName": "atom_abstrakty",
+      "columns": {
+        "abstrakt": "abstrakt",
+        "id": "id"
+      }
+    },
+    {
+      "type": "update",
+      "tableName": "atom_dataset_update",
+      "columns": {
+        "spatial_dataset_identifier_code": "inspire_dls_code"
+      }
+    },
+    {
+      "type": "georss_obce",
+      "tableName": "bbox_obce",
+      "columns": {
+        "kod": "kod",
+        "wgs84": "bbox_wgs84",
+        "jtsk": "bbox_sjtsk"
+      }
+    },
+    {
+      "type": "georss_stat",
+      "tableName": "bbox_staty",
+      "columns": {
+        "kod": "kod",
+        "wgs84": "bbox_wgs84",
+        "jtsk": "bbox_sjtsk"
+      }
+    },
+    {
+      "type": "georss_kp",
+      "tableName": "bbox_pracoviste",
+      "columns": {
+        "kod": "kod",
+        "wgs84": "bbox_wgs84",
+        "jtsk": "bbox_sjtsk"
+      }
+    },
+    {
+      "type": "georss_ku",
+      "tableName": "bbox_katastralni_uzemi",
+      "columns": {
+        "kod": "kod",
+        "wgs84": "bbox_wgs84",
+        "jtsk": "bbox_sjtsk"
+      }
+    }
+  ]
+}
