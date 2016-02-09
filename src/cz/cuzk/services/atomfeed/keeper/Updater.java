@@ -268,7 +268,11 @@ public class Updater {
 
         }else if(themeCode.contains("SHP")){
             return new KmShpService(getSources(themeCode), themeCode, dateOfChange);
-        }else{
+
+        }else if(themeCode.contains("DGN")){
+            return new KmShpService(getSources(themeCode), themeCode, dateOfChange);
+
+        } else{
             throw new UnknownDatasetException("Nalezeny dataset se nepodarilo klasifikovat.");
         }
     }
