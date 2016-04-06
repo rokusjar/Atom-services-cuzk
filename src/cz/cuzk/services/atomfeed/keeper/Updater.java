@@ -8,6 +8,11 @@ import cz.cuzk.services.atomfeed.feed.common.DatasetFile;
 import cz.cuzk.services.atomfeed.feed.datasetfeed.DatasetFeed;
 import cz.cuzk.services.atomfeed.feed.downloadservicefeed.DownloadServiceFeed;
 import cz.cuzk.services.atomfeed.feed.dsfeed.ServiceGroupFeed;
+import cz.cuzk.services.atomfeed.index.AtomIndex;
+import cz.cuzk.services.atomfeed.opensearch.OpenSearchDescription;
+import cz.cuzk.services.atomfeed.util.ftp.FTPException;
+import cz.cuzk.services.atomfeed.util.ftp.MyFTPClient;
+import freemarker.template.TemplateException;
 
 import java.io.File;
 import java.io.IOException;
@@ -61,46 +66,62 @@ public class Updater {
             DriverException, InvalidConfigFileException, ColumnNotFoundException {
 
         this.mapDisks();
-        this.deleteTempDir();
+        //this.deleteTempDir();
         this.connectToDatabase();
     }
     //------------------------------------------------------------------------------------------------------------------
     public void update() throws DriverException, InvalidConfigFileException, ColumnNotFoundException, SQLException,
-            TableNotFoundException, UnknownDatasetException, AtomFeedException, DownloadServiceNotFoundException {
+            TableNotFoundException, UnknownDatasetException, AtomFeedException, DownloadServiceNotFoundException,
+            IOException, FTPException, TemplateException {
 
         this.checkForChanges();
 
         if(!this.changedService.isEmpty()) {
 
             for (Service service : this.changedService) {
-                logger.info("Obdržen pokyn k aktualizaci - stahovací služby: " + service.getServiceId());
+                logger.info("Obdrzen pokyn k aktualizaci - stahovaci sluzby: " + service.getServiceId());
+                this.deleteTempDir();
                 this.dbHandler.updateServiceFeedId(service.getServiceId());
                 this.dbHandler.updateServiceOpenSearchlink(service.getServiceId());
                 this.dbHandler.updateServiceMetadataLink(service.getServiceId());
+                updateServiceAbstrakt(service.getServiceId());
 
+                logger.info("Aktualizuji databazi");
                 this.updateFilesTable(service);
                 this.updateDatasetTable(service);
-                logger.info("Aktualizace databáze dokončena");
+                logger.info("Aktualizace databaze dokoncena");
 
                 this.updateFeeds(service.getServiceId());
                 this.updateCustomFeeds();
 
-                publishFeeds(service.getServiceId());
+                //publishFeeds(service.getServiceId());
+                publishFeedsToFTP(service.getServiceId());
 
                 this.dbHandler.commitChangesToDatabase(service.getServiceId(), service.getDateOfChange());
-                logger.info("Aktualizace stahovací služby: " + service.getServiceId() + " dokončena a potvrzena");
+                logger.info("Aktualizace stahovací sluzby: " + service.getServiceId() + " dokoncena a potvrzena");
                 this.conn.commit();
+
+                logger.info("generuji osd");
+                OpenSearchDescription.getInstance().createOSD(service.getServiceId());
+                logger.info("nahravam osd na FTP server");
+                OpenSearchDescription.getInstance().uploadToFTP(service.getServiceId());
+
+                logger.info("generuji index");
+                AtomIndex.getInstance().createIndex();
+                logger.info("nahravam index na FTP server");
+                AtomIndex.getInstance().uploadToFTP();
             }
         }else{
-            logger.log(Level.INFO, "Není co aktualizovat");
+            logger.log(Level.INFO, "Neni co aktualizovat");
         }
     }
     //------------------------------------------------------------------------------------------------------------------
     private void updateCustomFeeds() throws AtomFeedException, InvalidConfigFileException, ColumnNotFoundException,
             SQLException, TableNotFoundException, DriverException {
 
+        logger.info("Aktualizuji skupinove feedy");
+
         for(CustomFeed cf : this.config.getCustomFeed()){
-            logger.info("Aktualizuji skupinový feed: " + cf.getTitle());
             ServiceGroupFeed sgfeed = new ServiceGroupFeed(cf.getFileName(), cf.getTitle(),
                                                            cf.getServiceCodes(), this.dbHandler, this.logger);
             sgfeed.construct();
@@ -122,10 +143,10 @@ public class Updater {
             logger.info("Dataset feedy sestaveny");
             DownloadServiceFeed topFeed = new DownloadServiceFeed(serviceId, this.dbHandler);
             topFeed.construct();
-            logger.info("Hlavní feed sestaven");
+            logger.info("Hlavni feed sestaven");
 
         } else {
-            logger.info("Žádné dataset feedy k aktualizaci.");
+            logger.info("Zadne dataset feedy k aktualizaci.");
         }
 
     }
@@ -148,6 +169,7 @@ public class Updater {
         for(File file : tempDir.listFiles()){
             if(file.isFile()){
                 if(file.getName().equals(mainFeed)){
+                    //Hlavni feed
                     File newDir = new File(this.config.getRepository().getLocalRepository()
                             + "\\" + serviceId);
 
@@ -159,12 +181,13 @@ public class Updater {
                     file.renameTo(newFile);
 
                 }else if(getCustomFeedsFileNames().contains(file.getName().split("\\.")[0])){
-
+                    //sdruzujici feedy
                     File newFile = new File(this.config.getRepository().getLocalRepository() + "\\" + file.getName());
                     newFile.delete();
                     file.renameTo(newFile);
 
                 }else{
+                    //datasetove feedy
                     File newDir = new File(this.config.getRepository().getLocalRepository()
                             + "\\" + serviceId + "\\datasetFeeds");
 
@@ -180,7 +203,70 @@ public class Updater {
         logger.info("Feedy vystaveny");
     }
     //------------------------------------------------------------------------------------------------------------------
+    /**
+     *
+     * @param serviceId
+     * @throws IOException
+     * @throws FTPException
+     */
+    private void publishFeedsToFTP(String serviceId) throws IOException, FTPException {
 
+        System.out.println("Nahravam feedy na FTP server.");
+
+        File tempDir = new File(this.config.getRepository().getTempRepository());
+        String mainFeed = serviceId + ".xml";
+        MyFTPClient ftpClient = new MyFTPClient();
+        try {
+            ftpClient.connect(this.config.getFtp().getHost(), this.config.getFtp().getUser(),
+                    this.config.getFtp().getPassword());
+
+            File hlavniFeed = null;
+            String ftpDirPath = this.config.getRepository().getLocalRepository();
+            if (!ftpClient.directoryExist(ftpDirPath + "/" + serviceId)) {
+                ftpClient.makeDirectory(serviceId, ftpDirPath);
+            }
+            String datasetDirPath = this.config.getRepository().getLocalRepository() + "/" + serviceId + "/datasetFeeds";
+
+            if (!ftpClient.directoryExist(datasetDirPath)) {
+                ftpClient.makeDirectory("datasetFeeds", ftpDirPath + "/" + serviceId);
+            }
+
+            for (File file : tempDir.listFiles()) {
+                if (file.isFile()) {
+                    if (file.getName().equals(mainFeed)) {
+                        //Hlavni feed
+                        hlavniFeed = file;
+
+                    } else if (getCustomFeedsFileNames().contains(file.getName().split("\\.")[0])) {
+                        //sdruzujici feedy
+                        continue;
+
+                    } else {
+                        //datasetove feedy
+                        ftpClient.upload(file, datasetDirPath);
+                    }
+                }
+            }
+
+            //Hlavni feed nahravam az po nahrani vsech datasetovych feedu a jen pokud existuje
+            //hlavni feed neexistuje v pripade ze nebylo co aktualizovat
+            if(hlavniFeed != null) ftpClient.upload(hlavniFeed, ftpDirPath + "/" + serviceId);
+
+            //Sdruzujici feedy nahravam az nakonec
+            for (File file : tempDir.listFiles()) {
+                if (file.isFile()) {
+                    if (getCustomFeedsFileNames().contains(file.getName().split("\\.")[0])) {
+                        //sdruzujici feedy
+                        ftpClient.upload(file, ftpDirPath);
+                    }
+                }
+            }
+
+        }finally {
+            ftpClient.disconnect();
+        }
+        logger.info("Feedy nahrany na FTP");
+    }
     //------------------------------------------------------------------------------------------------------------------
     /**
      * Vrátí jména souborů všech skupinových feedů (feedů které sdružují stahovací služby)
@@ -204,7 +290,7 @@ public class Updater {
     private void mapDisks() throws IOException, InterruptedException {
         Process p = Runtime.getRuntime().exec("cmd /C " + getJarLocation() + "/connect_disk_services.bat");
         p.waitFor();
-        logger.info("Mapování disků dokončeno");
+        logger.info("Mapovani disku dokonceno");
     }
     //------------------------------------------------------------------------------------------------------------------
     /**
@@ -215,7 +301,7 @@ public class Updater {
         for(File file : tempDir.listFiles()){
             file.delete();
         }
-        logger.info("Dočasný adresář promazán");
+        logger.info("Docasny adresar promazan");
     }
     //------------------------------------------------------------------------------------------------------------------
     private void connectToDatabase() throws SQLException, TableNotFoundException, DriverException,
@@ -224,7 +310,7 @@ public class Updater {
         this.conn = DriverManager.getConnection(this.connectionString);
         this.conn.setAutoCommit(false);
         this.dbHandler = new DatabaseHandler(this.conn);
-        logger.info("Připojení do databáze úspěšné");
+        logger.info("Pripojení do databaze uspesne");
     }
     //------------------------------------------------------------------------------------------------------------------
     private void disconnectFromDatabase() throws SQLException{
@@ -240,7 +326,7 @@ public class Updater {
     private void checkForChanges() throws SQLException, UnknownDatasetException, TableNotFoundException,
             DriverException, InvalidConfigFileException, ColumnNotFoundException {
 
-        for(ChangedService service : this.dbHandler.getChanges()){
+        for(ChangedService service : this.dbHandler.getChangedServices()){
             this.changedService.add(classify(service.getServiceCode(), service.getDateOfChange()));
         }
     }
@@ -297,7 +383,7 @@ public class Updater {
             }
         }
         if(!found){
-            throw new UnknownDatasetException(String.format("Neznámy kód tématu - %s", themeCode));
+            throw new UnknownDatasetException(String.format("Neznamy kod tematu - %s", themeCode));
         }
         return sources;
     }
@@ -391,13 +477,12 @@ public class Updater {
         }
 
         // zapsat do databaze - tabulka metadat
-        dbHandler.insertMetadataRequests("DELETE", missing);
-        //dbHandler.insertUpdateRequest(missing);
+        //dbHandler.insertMetadataRequests("DELETE", missing);
 
-        dbHandler.insertMetadataRequests("CREATE", neew);
+        //dbHandler.insertMetadataRequests("CREATE", neew);
         dbHandler.insertUpdateRequest(neew);
 
-        dbHandler.insertMetadataRequests("UPDATE", modified);
+        //dbHandler.insertMetadataRequests("UPDATE", modified);
         dbHandler.insertUpdateRequest(modified);
 
         return true;
@@ -444,6 +529,16 @@ public class Updater {
         this.dbHandler.setNewData(theme_id);
     }
     //------------------------------------------------------------------------------------------------------------------
+    /**
+     * Precte z databaze aktualni abstrakt a vlozi ho do tabulky atom_services - sloupec subtitle
+     * Dela update ne insert
+     * @param serviceID
+     * @throws SQLException
+     */
+    private void updateServiceAbstrakt(String serviceID) throws SQLException {
+        String abstrakt = this.dbHandler.getAbstractForService(serviceID);
+        this.dbHandler.updateServiceAbstrakt(abstrakt, serviceID);
+    }
     //------------------------------------------------------------------------------------------------------------------
     /**
      * Vrátí absolutní cestu k umístění, kde se nachází jar soubor.

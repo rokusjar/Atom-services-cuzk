@@ -33,8 +33,9 @@ public class RuianService extends Service {
             File sourceDir = new File(source.getDirPath());
 
             for(File file : sourceDir.listFiles()){
-
-                if(!file.getName().endsWith("csv.gz") && !file.getName().endsWith("csv.zip")) {
+                
+                if(!file.getName().endsWith("csv.gz") && !file.getName().endsWith("csv.zip") &&
+                        !file.getName().endsWith("xml.gz") &&!file.getName().endsWith("tar.gz")) {
                     continue;
                 }
                 String fileName = file.getName();

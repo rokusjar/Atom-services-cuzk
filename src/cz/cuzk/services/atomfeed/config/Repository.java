@@ -4,7 +4,7 @@ package cz.cuzk.services.atomfeed.config;
  *
  */
 public class Repository {
-    private String localRepository;
+    private String Repository;
     private String webPath;
     private String tempRepository;
 
@@ -13,7 +13,7 @@ public class Repository {
     }
 
     public String getLocalRepository() {
-        return localRepository;
+        return Repository;
     }
 
     public String getWebPath() {

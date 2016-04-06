@@ -5,6 +5,8 @@
       <element id="module-output" name="Atom_2.0" />
       <element id="extracted-dir" path="$PROJECT_DIR$/lib/ojdbc14.jar" path-in-jar="/" />
       <element id="extracted-dir" path="$PROJECT_DIR$/lib/gson-2.2.2.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$PROJECT_DIR$/lib/commons-net-3.4.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$PROJECT_DIR$/lib/freemarker.jar" path-in-jar="/" />
     </root>
   </artifact>
 </component>

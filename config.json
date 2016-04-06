@@ -1,4 +1,4 @@
-{
+﻿{
 
   "dbConnection": {
     "service_name": "PUBL.katastr.int",
@@ -8,74 +8,45 @@
     "password": "frokD27xtY69de"
   },
 
+  "FTP": {
+    "user":"atom",
+    "password": "Zpr8vi4kY",
+    "host":"195.245.209.161"
+  },
+
   "repository": {
-    "localRepository": "G:\\Feeds\\",
-    "webPath": "http://a200034.katastr.int/Atom/Feeds",
+    "Repository": "atom",
+    "webPath": "http://atom.cuzk.cz",
     "tempRepository": "G:\\temp\\"
   },
 
   "customFeed": [
-    {
-      "fileName": "inspire",
-      "title": "Stahovací služby INSPIRE témat poskytovaných ČÚZK",
+	{
+      "fileName": "cuzk-atom-services",
+      "title": "Stahovací služby Atom poskytované ČÚZK",
       "serviceCodes":[
         {"code": "AU"},
         {"code": "AD"},
         {"code": "CP"},
-        {"code": "BU"}
-      ]
-    },
-    {
-      "fileName": "ruian_specialni",
-      "title": "Stahovací služby speciálních dat RÚIAN",
-      "serviceCodes":[
-        {"code": "RUIAN-SP-CIS-U"},
-        {"code": "RUIAN-SP-VO-U"}
-      ]
-    },
-    {
-      "fileName": "ruian_soucasna",
-      "title": "Stahovací služby současných dat RÚIAN",
-      "serviceCodes":[
-        {"code": "RUIAN-S-K-U"},
+        {"code": "BU"},
+		{"code": "KM-KU-VFK"},
+        {"code": "KM-KU-SHP"},
+		{"code": "KM-KU-DGN"},
+        {"code": "KM-KU-VKM"},
+        {"code": "KM-KP-VFK"},
+		{"code": "GMPL-KU-VFK"},
+        {"code": "GMPL-KP-VFK"},
+		{"code": "RUIAN-S-K-U"},
         {"code": "RUIAN-S-K-Z"},
         {"code": "RUIAN-S-ZA-U"},
-        {"code": "RUIAN-S-ZA-Z"}
-      ]
-    },
-    {
-      "fileName": "ruian_historicka",
-      "title": "Stahovací služby historických dat RÚIAN",
-      "serviceCodes":[
-        {"code": "RUIAN-H-ZA-U"},
-        {"code": "RUIAN-H-ZA-Z"}
-      ]
-    },
-    {
-      "fileName": "ruian_csv",
-      "title": "Stahovací služby dat RÚIAN ve formátu csv",
-      "serviceCodes":[
-        {"code": "RUIAN-CSV-ADR-OB"},
+        {"code": "RUIAN-S-ZA-Z"},
+		{"code": "RUIAN-H-ZA-U"},
+        {"code": "RUIAN-H-ZA-Z"},
+		{"code": "RUIAN-SP-CIS-U"},
+        {"code": "RUIAN-SP-VO-U"},
+		{"code": "RUIAN-CSV-ADR-OB"},
         {"code": "RUIAN-CSV-ADR-ST"},
         {"code": "RUIAN-CSV-HIE-ST"}
-      ]
-    },
-    {
-      "fileName": "km",
-      "title": "Stahovací služby pro Katastrální mapu ČR",
-      "serviceCodes":[
-        {"code": "KM-KU-VFK"},
-        {"code": "KM-KU-SHP"},
-        {"code": "KM-KU-VKM"},
-        {"code": "KM-KP-VFK"}
-      ]
-    },
-    {
-      "fileName": "gp",
-      "title": "Stahovací služby pro zplatněné geometrické plány",
-      "serviceCodes":[
-        {"code": "GMPL-KU-VFK"},
-        {"code": "GMPL-KP-VFK"}
       ]
     }
   ],
@@ -229,6 +200,20 @@
           "epsg": "5514",
           "unit_type": "ku",
           "format": "SHP",
+          "georss_type": "polygon"
+        }
+      ]
+    },
+    {
+      "name": "KM-KU-DGN",
+      "code": "KM-KU-DGN",
+      "sources": [
+        {
+          "dirPath": "N:\\DGN\\ku\\",
+          "webPath": "http://services.cuzk.cz/dgn/ku",
+          "epsg": "5514",
+          "unit_type": "ku",
+          "format": "DGN",
           "georss_type": "polygon"
         }
       ]
@@ -450,7 +435,7 @@
         "subtitle": "subtitle",
         "metadata_link": "metadata_link",
         "spatial_dataset_identifier_code": "inspire_dls_code",
-        "spatial_dataset_identifier_namespace": "inpsire_dls_namespace",
+        "spatial_dataset_identifier_namespace": "inspire_dls_namespace",
         "contributor": "contributor",
         "generator": "generator",
         "icon": "icon",
@@ -478,18 +463,6 @@
       }
     },
     {
-      "type": "metadata",
-      "tableName": "atom_metadata",
-      "columns": {
-        "spatial_dataset_identifier_code": "inspire_dls_code",
-        "operace": "operace",
-        "datum_vlozeni": "datum_vlozeni",
-        "datum_publikace": "datum_publikace",
-        "id": "id",
-        "stav": "stav"
-      }
-    },
-    {
       "type": "publikace",
       "tableName": "atom_stav_publikace",
       "columns": {
@@ -503,7 +476,7 @@
       "tableName": "atom_abstrakty",
       "columns": {
         "abstrakt": "abstrakt",
-        "id": "id"
+        "service_id": "service_id"
       }
     },
     {

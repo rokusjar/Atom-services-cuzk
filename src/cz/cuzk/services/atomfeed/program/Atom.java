@@ -5,6 +5,7 @@ import cz.cuzk.services.atomfeed.database.DriverException;
 import cz.cuzk.services.atomfeed.feed.common.AtomFeedException;
 import cz.cuzk.services.atomfeed.keeper.UnknownDatasetException;
 import cz.cuzk.services.atomfeed.keeper.Updater;
+import freemarker.template.TemplateException;
 
 import java.io.File;
 import java.io.IOException;
@@ -26,6 +27,7 @@ public class Atom {
     private static final Boolean JAR = true; //pokud chci debugovat tak false
     //------------------------------------------------------------------------------------------------------------------
     public static void main(String[] args){
+
         Updater updater = null;
 
         try {
@@ -46,7 +48,7 @@ public class Atom {
             fh.setFormatter(formatter);
             logger.addHandler(fh);
 
-            logger.info("Program Atom spuštěn");
+            logger.info("Program Atom spustěn");
 
             updater = new Updater(logger);
             updater.initialize();
@@ -73,7 +75,9 @@ public class Atom {
             logger.log(Level.SEVERE, "Nepodařilo se nalézt nebo vytvořit soubor.", e);
         } catch (AtomFeedException e) {
             logger.log(Level.SEVERE, "Chyba při sestavení feedu.", e);
-        }  catch (Exception e) {
+        } catch (TemplateException e){
+            logger.log(Level.SEVERE, "Chyba při sestavení feedu.", e);
+        } catch (Exception e) {
             logger.log(Level.SEVERE, "Neznámá chyba", e);
         }
         finally {

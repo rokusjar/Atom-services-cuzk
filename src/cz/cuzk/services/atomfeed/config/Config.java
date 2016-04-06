@@ -18,6 +18,7 @@ public class Config {
     private Table[] tables;
     private Repository repository;
     private CustomFeed[] customFeed;
+    private FTP ftp;
     //------------------------------------------------------------------------------------------------------------------
     public Table[] getTables() {
         return tables;
@@ -303,6 +304,14 @@ public class Config {
 
     public void setCustomFeed(CustomFeed[] customFeeds) {
         this.customFeed = customFeeds;
+    }
+
+    public FTP getFtp() {
+        return ftp;
+    }
+
+    public void setFtp(FTP ftp) {
+        this.ftp = ftp;
     }
 
 }

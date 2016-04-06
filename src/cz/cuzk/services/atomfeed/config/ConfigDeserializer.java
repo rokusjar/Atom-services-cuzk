@@ -23,7 +23,7 @@ public class ConfigDeserializer implements JsonDeserializer<Config>{
         Table[] tables = context.deserialize(jsonObject.getAsJsonArray("tables"), Table[].class);
         DownloadService[] downloadServices = context.deserialize(jsonObject.getAsJsonArray("downloadService"), DownloadService[].class);
         CustomFeed[] customFeed = context.deserialize(jsonObject.getAsJsonArray("customFeed"), CustomFeed[].class);
-
+        FTP ftp = context.deserialize(jsonObject.get("FTP"), FTP.class);
 
         Config config = new Config();
         config.setDbConn(dbConnection);
@@ -31,6 +31,7 @@ public class ConfigDeserializer implements JsonDeserializer<Config>{
         config.setTables(tables);
         config.setRepository(repository);
         config.setCustomFeed(customFeed);
+        config.setFtp(ftp);
 
         return config;
     }
