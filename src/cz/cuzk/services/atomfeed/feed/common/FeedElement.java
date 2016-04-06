@@ -88,6 +88,7 @@ public class FeedElement {
         this.feed.setAttribute("xmlns", "http://www.w3.org/2005/Atom");
         this.feed.setAttribute("xmlns:georss", "http://www.georss.org/georss");
         this.feed.setAttribute("xmlns:inspire_dls", "http://inspire.ec.europa.eu/schemas/inspire_dls/1.0");
+        this.feed.setAttribute("xmlns:opensearch", "http://a9.com/-/spec/opensearch/1.1/");
         this.feed.setAttribute("xml:lang", "cs");
         this.getTargetDoc().appendChild(this.getFeed());
         this.createFeed();

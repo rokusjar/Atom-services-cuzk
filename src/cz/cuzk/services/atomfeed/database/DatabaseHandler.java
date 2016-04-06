@@ -31,7 +31,6 @@ public class DatabaseHandler {
     private Table serviceTable = null;
     private Table datasetTable = null;
     private Table filesTable = null;
-    private Table metadataTable = null;
     private Table publikaceTable = null;
     private Table abstraktTable = null;
     private Table datasetUpdateTable = null;
@@ -65,7 +64,6 @@ public class DatabaseHandler {
             this.setServiceTable(this.getConfig().getServiceTable());
             this.setDatasetTable(this.getConfig().getDatasetTable());
             this.setFilesTable(this.getConfig().getFilesTable());
-            this.setMetadataTable(this.getConfig().getMetadataTable());
             this.setPublikaceTable(this.getConfig().getPublikaceTable());
             this.setAbstraktTable(this.getConfig().getAbstraktTable());
             this.setDatasetUpdateTable(this.getConfig().getDatasetUpdateTable());
@@ -299,13 +297,13 @@ public class DatabaseHandler {
         Statement stmt = null;
         ResultSet rs = null;
 
-        String query = "SELECT to_char(%s, 'RRRR-MM-DD')||'T'||to_char(%s, 'HH24:MI:SS')||'+1:00' FROM %s WHERE %s = '%s'";
+        String query = "SELECT to_char(%s, 'RRRR-MM-DD')||'T'||to_char(%s, 'HH24:MI:SS')||'+01:00' FROM %s WHERE %s = '%s'";
 
         query = String.format(query,
-                this.getDatasetTable().getColumns().get("updated"),
-                this.getDatasetTable().getColumns().get("updated"),
+                this.getServiceTable().getColumns().get("updated"),
+                this.getServiceTable().getColumns().get("updated"),
                 this.getServiceTable().getTableName(),
-                this.getDatasetTable().getColumns().get("service_id"),
+                this.getServiceTable().getColumns().get("service_id"),
                 serviceId);
 
         String queryResult = "";
@@ -474,7 +472,7 @@ public class DatabaseHandler {
         Statement stmt = null;
         ResultSet rs = null;
 
-        String query = "SELECT to_char(%s, 'RRRR-MM-DD')||'T'||to_char(%s, 'HH24:MI:SS')||'+1:00' FROM %s WHERE %s = '%s'";
+        String query = "SELECT to_char(%s, 'RRRR-MM-DD')||'T'||to_char(%s, 'HH24:MI:SS')||'+01:00' FROM %s WHERE %s = '%s'";
 
         query = String.format(query,
                 this.getDatasetTable().getColumns().get("updated"),
@@ -837,37 +835,33 @@ public class DatabaseHandler {
         }
     }
     //------------------------------------------------------------------------------------------------------------------
-    /**
-     * Vrátí hodnoty sloupce service_id pro všechny záznamy z tabulky atom_stav_publikace, které
-     * mají hodnotu sloupce datum_publikace_atom rovnu null.
-     * @return
-     * @throws SQLException
-     */
-    public ArrayList<ChangedService> getChanges() throws SQLException{
+    public ArrayList<ChangedService> getChangedServices() throws SQLException{
         Statement stmt = null;
         ResultSet rs = null;
-        ArrayList<ChangedService> datasetCodes = new ArrayList<ChangedService>();
-        String select = "SELECT %s, to_char(%s, 'DD.MM.RRRR:HH24:MI:SS') FROM %s WHERE %s IS NULL";
-        select = String.format(select,
-                this.getPublikaceTable().getColumns().get("service_id"),
-                this.getPublikaceTable().getColumns().get("datum_publikace"),
-                this.getPublikaceTable().getTableName(),
-                this.getPublikaceTable().getColumns().get("datum_aktualizace_databaze"));
+        ArrayList<ChangedService> chServices = new ArrayList<ChangedService>();
+        String select = "SELECT %s, to_char(%s, 'DD.MM.RRRR:HH24:MI:SS') FROM %s WHERE %s IS NULL AND %s = '%s'";
         try{
-            stmt = conn.createStatement();
-            rs = stmt.executeQuery(select);
-            while (rs.next()){
-                ChangedService chD = new ChangedService();
-                chD.setServiceCode(rs.getString(1));
-                chD.setDateOfChange(rs.getString(2));
-                datasetCodes.add(chD);
+            for(DownloadService s : this.config.getDownloadService()){
+                stmt = conn.createStatement();
+                rs = stmt.executeQuery(String.format(select,
+                        this.getPublikaceTable().getColumns().get("service_id"),
+                        this.getPublikaceTable().getColumns().get("datum_publikace"),
+                        this.getPublikaceTable().getTableName(),
+                        this.getPublikaceTable().getColumns().get("datum_aktualizace_databaze"),
+                        this.getPublikaceTable().getColumns().get("service_id"),
+                        s.getCode()));
+                if(rs.next()){
+                    ChangedService chD = new ChangedService();
+                    chD.setServiceCode(rs.getString(1));
+                    chD.setDateOfChange(rs.getString(2));
+                    chServices.add(chD);
+                }
             }
         }finally {
             try{ if(rs != null) rs.close(); }catch (Exception e){}
             try{ if(stmt != null) stmt.close(); }catch (Exception e){}
         }
-
-        return datasetCodes;
+        return chServices;
     }
     //------------------------------------------------------------------------------------------------------------------
     /**
@@ -1167,44 +1161,20 @@ public class DatabaseHandler {
         }
     }
     //------------------------------------------------------------------------------------------------------------------
+    /**
+     *
+     * @param operace
+     * @param files
+     * @throws SQLException
+     */
     public void insertMetadataRequests(String operace, ArrayList<DatasetFile> files) throws SQLException{
-        //TODO co bude metadata_id ?
-        Statement stmt = null;
-        String insert = "INSERT INTO %s (%s, %s, %s, %s) " +
-                "VALUES ('%s', '%s', to_date('%s', 'DD.MM.RRRR:HH24:MI:SS'), '%s')";
+        //TODO co bude metadata_id - inspire_dls_code
+        //TODO funkce bude vypadat uplne jinak
 
         LocalDateTime cTime = LocalDateTime.now();
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd.MM.YYYY:HH:mm:ss");
         String time = cTime.format(formatter);
 
-        String format;
-
-        try{
-            stmt = conn.createStatement();
-            for(DatasetFile file : files) {
-
-                if(file.getService_id().split("-").length == 1 || file.getService_id().contains("RUIAN")){
-                    format = "";
-                }else {
-                    format = "-" + file.getService_id().split("-")[2];
-                }
-
-                stmt.executeUpdate(
-                        String.format(insert, this.getMetadataTable().getTableName(),
-                                this.getMetadataTable().getColumns().get("spatial_dataset_identifier_code"),
-                                this.getMetadataTable().getColumns().get("operace"),
-                                this.getMetadataTable().getColumns().get("datum_vlozeni"),
-                                this.getMetadataTable().getColumns().get("stav"),
-                                file.getInspire_dls_code() + "-" + file.getCrs_epsg() + "-"  + format,
-                                operace,
-                                time,
-                                "zpracovat"
-                               ));
-            }
-        }
-        finally {
-            try{ if(stmt != null) stmt.close(); }catch (Exception e){}
-        }
     }
     //------------------------------------------------------------------------------------------------------------------
     /**
@@ -1274,7 +1244,34 @@ public class DatabaseHandler {
         return parts[2];
     }
     //------------------------------------------------------------------------------------------------------------------
-    private String getAbstractForDataset(String abstraktId) throws SQLException {
+    private String getAbstractForDataset(String serviceId) throws SQLException {
+
+//        Statement stmt = null;
+//        ResultSet rs = null;
+//        String select = "SELECT %s FROM %s WHERE %s = '%s'";
+//        String abstrakt = "";
+//        try{
+//            stmt = conn.createStatement();
+//            rs = stmt.executeQuery(String.format(select,
+//                    this.getAbstraktTable().getColumns().get("abstrakt"),
+//                    this.getAbstraktTable().getTableName(),
+//                    this.getAbstraktTable().getColumns().get("service_id"),
+//                    serviceId
+//                    ));
+//            if(rs.next()) {
+//                abstrakt = rs.getString(1);
+//            }else {
+//                abstrakt = "Abstrakt služby: " + serviceId + " nebyl nalezen";
+//            }
+//        }finally {
+//            try{ if(stmt != null) stmt.close(); }catch (Exception e){}
+//            try{ if(rs != null) rs.close(); }catch (Exception e){}
+//        }
+
+        return "nepouzivame";
+    }
+    //------------------------------------------------------------------------------------------------------------------
+    public String getAbstractForService(String serviceId) throws SQLException{
 
         Statement stmt = null;
         ResultSet rs = null;
@@ -1285,21 +1282,39 @@ public class DatabaseHandler {
             rs = stmt.executeQuery(String.format(select,
                     this.getAbstraktTable().getColumns().get("abstrakt"),
                     this.getAbstraktTable().getTableName(),
-                    this.getAbstraktTable().getColumns().get("id"),
-                    abstraktId
+                    this.getAbstraktTable().getColumns().get("service_id"),
+                    serviceId
                     ));
             if(rs.next()) {
                 abstrakt = rs.getString(1);
             }else {
-                abstrakt = "Abstrakt: " + abstraktId + " nebyl nalezen";
+                abstrakt = "Abstrakt služby: " + serviceId + " nebyl nalezen";
             }
         }finally {
             try{ if(stmt != null) stmt.close(); }catch (Exception e){}
             try{ if(rs != null) rs.close(); }catch (Exception e){}
         }
 
-        //return abstrakt;
-        return "Sem se doplní abstrakt";
+        return abstrakt;
+    }
+    //------------------------------------------------------------------------------------------------------------------
+    public void updateServiceAbstrakt(String newAbstrakt, String serviceID) throws SQLException{
+        Statement stmt = null;
+        String update = "UPDATE %s SET %s = '%s' WHERE %s = '%s'";
+
+        try{
+            stmt = conn.createStatement();
+            stmt.executeUpdate(String.format(update,
+                    this.getServiceTable().getTableName(),
+                    this.getServiceTable().getColumns().get("subtitle"),
+                    newAbstrakt,
+                    this.getServiceTable().getColumns().get("service_id"),
+                    serviceID
+            ));
+
+        }finally {
+            try{ if(stmt != null) stmt.close(); }catch (Exception e){}
+        }
     }
     //------------------------------------------------------------------------------------------------------------------
     /**
@@ -1754,7 +1769,7 @@ public class DatabaseHandler {
         update = String.format(update,
                 this.getServiceTable().getTableName(),
                 this.getServiceTable().getColumns().get("opensearch_link"),
-                this.config.getRepository().getWebPath() + "/" + serviceId + "/" + serviceId + "_S.xml",
+                this.config.getRepository().getWebPath() + "/" + serviceId + "/OSD-" + serviceId + ".xml",
                 this.getDatasetTable().getColumns().get("service_id"),
                 serviceId);
         try{
@@ -1866,14 +1881,6 @@ public class DatabaseHandler {
 
     public void setFilesTable(Table filesTable) {
         this.filesTable = filesTable;
-    }
-
-    public Table getMetadataTable() {
-        return metadataTable;
-    }
-
-    public void setMetadataTable(Table metadataTable) {
-        this.metadataTable = metadataTable;
     }
 
     public Table getPublikaceTable() {

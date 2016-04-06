@@ -50,7 +50,7 @@ public class DownloadServiceFeed extends AtomFeed{
             metadata.setHref(this.getDb().getMainFeedMetadataLink(serviceId));
 
             Link openSearch = new Link(LinkType.OPENSEARCH);
-            openSearch.setTitle("Opensearch xml soubor");
+            openSearch.setTitle("ČÚZK-Atom-" + serviceId);
             openSearch.setHref(this.getDb().getMainFeedOpenSearchLink(serviceId));
             openSearch.setHreflang("cs");
 
