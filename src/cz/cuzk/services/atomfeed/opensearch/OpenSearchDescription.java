@@ -63,8 +63,8 @@ public class OpenSearchDescription {
         //Konfigurace
 
         Configuration cfg = new Configuration(Configuration.VERSION_2_3_23);
-        //cfg.setDirectoryForTemplateLoading(new File("templates"));
-        cfg.setDirectoryForTemplateLoading(new File(getJarLocation() + "/templates"));
+        cfg.setDirectoryForTemplateLoading(new File("templates"));
+        //cfg.setDirectoryForTemplateLoading(new File(getJarLocation() + "/templates"));
         cfg.setDefaultEncoding("UTF-8");
         cfg.setTemplateExceptionHandler(TemplateExceptionHandler.RETHROW_HANDLER);
 
@@ -77,10 +77,14 @@ public class OpenSearchDescription {
         Template template = cfg.getTemplate("OSD-" + service_id + ".xml");
 
         //Spojeni modelu a sablony - vytvoreni souboru
-        FileOutputStream fos = new FileOutputStream(
-                new File(this.config.getRepository().getTempRepository() + "\\OSD-"+ service_id + ".xml"));
-        OutputStreamWriter osw = new OutputStreamWriter(fos, "UTF-8");
-        template.process(dataModel, osw);
+        try(
+            FileOutputStream fos = new FileOutputStream(
+                    new File(this.config.getRepository().getTempRepository() + "\\OSD-"+ service_id + ".xml"));
+            OutputStreamWriter osw = new OutputStreamWriter(fos, "UTF-8")
+        ){
+            template.process(dataModel, osw);
+        }
+
     }
     //------------------------------------------------------------------------------------------------------------------
     /**

@@ -18,7 +18,7 @@ import java.io.InputStream;
  * Trida slouzi jako jednoduchy FTP klient. Verze 1.0 umi nahravat a mazat soubory.
  * pro nahrani slouzi funkce upload. Pro mazani funkce deleteFile.
  */
-public class MyFTPClient {
+public class MyFTPClient{
 
     private FTPClient ftpClient = null;
     //------------------------------------------------------------------------------------------------------------------

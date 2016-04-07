@@ -66,7 +66,6 @@ public class Updater {
             DriverException, InvalidConfigFileException, ColumnNotFoundException {
 
         this.mapDisks();
-        //this.deleteTempDir();
         this.connectToDatabase();
     }
     //------------------------------------------------------------------------------------------------------------------
@@ -81,6 +80,11 @@ public class Updater {
             for (Service service : this.changedService) {
                 logger.info("Obdrzen pokyn k aktualizaci - stahovaci sluzby: " + service.getServiceId());
                 this.deleteTempDir();
+
+                //Pro jistotu bych mohl promazavat tabulky, ale pak by mi mohla uniknout chyba
+                //this.dbHandler.clearDatasetUpdateTable();
+                //this.dbHandler.clearDatasetDeleteTable();
+
                 this.dbHandler.updateServiceFeedId(service.getServiceId());
                 this.dbHandler.updateServiceOpenSearchlink(service.getServiceId());
                 this.dbHandler.updateServiceMetadataLink(service.getServiceId());
@@ -128,8 +132,24 @@ public class Updater {
         }
     }
     //------------------------------------------------------------------------------------------------------------------
+    /**
+     * nejprve zavolá funkci deleteCancelFeeds, ktera smaže již neplatné datasetové feedy a poté vygenruje nové,
+     * nebo aktualizované datasetové feedy.
+     * @param serviceId
+     * @throws SQLException
+     * @throws TableNotFoundException
+     * @throws AtomFeedException
+     * @throws DriverException
+     * @throws InvalidConfigFileException
+     * @throws ColumnNotFoundException
+     * @throws DownloadServiceNotFoundException
+     * @throws IOException
+     * @throws FTPException
+     */
     public void updateFeeds(String serviceId) throws SQLException, TableNotFoundException, AtomFeedException, DriverException,
-            InvalidConfigFileException, ColumnNotFoundException, DownloadServiceNotFoundException {
+            InvalidConfigFileException, ColumnNotFoundException, DownloadServiceNotFoundException, IOException, FTPException {
+
+        deleteCanceledFeeds(serviceId);
 
         ArrayList<String> dlsCodes = dbHandler.getUpdateRequests();
 
@@ -149,6 +169,37 @@ public class Updater {
             logger.info("Zadne dataset feedy k aktualizaci.");
         }
 
+    }
+    //------------------------------------------------------------------------------------------------------------------
+    /**
+     * Smaže z FTP serveru všechny datasetové feedy, které najde v tabulce atom_dataset_delete
+     * @param serviceId
+     * @throws SQLException
+     * @throws IOException
+     * @throws FTPException
+     */
+    private void deleteCanceledFeeds(String serviceId) throws SQLException, IOException, FTPException {
+
+        ArrayList<String> dlsCodes = dbHandler.getDeleteRequests();
+        logger.info("Nalezeno " + dlsCodes.size() + " feedu ke smazani");
+
+        if(dlsCodes.size() > 0) {
+
+            MyFTPClient myFTPClient = new MyFTPClient();
+
+            try {
+                myFTPClient.connect(this.config.getFtp().getHost(), this.config.getFtp().getUser(),
+                        this.config.getFtp().getPassword());
+
+                for (String dlsCode : dlsCodes) {
+
+                    myFTPClient.deleteFile("atom/" + serviceId + "/datasetFeeds/" + dlsCode + ".xml");
+                    dbHandler.deleteDeleteRequest(dlsCode);
+                }
+            } finally {
+                myFTPClient.disconnect();
+            }
+        }
     }
     //------------------------------------------------------------------------------------------------------------------
     /**
@@ -448,7 +499,8 @@ public class Updater {
     }
     //------------------------------------------------------------------------------------------------------------------
     /**
-     * Porovná poslední známý stav adresáře se současným stavem. Poslední známý stav odpovída tomu co je ve feedu.
+     * Porovná poslední známý stav adresáře se současným stavem. Poslední známý stav odpovída tomu co je ve
+     * feedu a databázi.
      * Na základě porovnání zapíše záznamy do tabulky pro metadata a do tabulky dataset_updated zapíše kódy
      * datasetových feedů, které mají být aktualizovány.
      * Vrátí true pokud nastaly změny. Pokud se nic nezměnil vrátí false.
@@ -478,6 +530,7 @@ public class Updater {
 
         // zapsat do databaze - tabulka metadat
         //dbHandler.insertMetadataRequests("DELETE", missing);
+        dbHandler.insertDeleteRequest(missing);
 
         //dbHandler.insertMetadataRequests("CREATE", neew);
         dbHandler.insertUpdateRequest(neew);
