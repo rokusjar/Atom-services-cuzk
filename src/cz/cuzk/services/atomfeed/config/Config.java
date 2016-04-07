@@ -129,6 +129,21 @@ public class Config {
         }
     }
     //------------------------------------------------------------------------------------------------------------------
+    public Table getDatasetDeleteTable() throws TableNotFoundException, ColumnNotFoundException{
+        Table rTable = null;
+        for(Table t : tables){
+            if(t.getType().equals("delete")){
+                rTable = t;
+            }
+        }
+        if(rTable == null){
+            throw new TableNotFoundException("Tabulka s atributem type:delete nebyla nalezena.");
+        }else {
+            checkColumns(rTable);
+            return rTable;
+        }
+    }
+    //------------------------------------------------------------------------------------------------------------------
     public Table getGeorssStat() throws TableNotFoundException, ColumnNotFoundException{
         Table rTable = null;
         for(Table t : tables){

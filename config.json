@@ -487,6 +487,13 @@
       }
     },
     {
+      "type": "delete",
+      "tableName": "atom_dataset_delete",
+      "columns": {
+        "spatial_dataset_identifier_code": "inspire_dls_code"
+      }
+    },
+    {
       "type": "georss_obce",
       "tableName": "bbox_obce",
       "columns": {

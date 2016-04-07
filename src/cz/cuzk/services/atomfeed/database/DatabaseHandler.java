@@ -34,6 +34,7 @@ public class DatabaseHandler {
     private Table publikaceTable = null;
     private Table abstraktTable = null;
     private Table datasetUpdateTable = null;
+    private Table datasetDeleteTable = null;
     private Table georssStat = null;
     private Table georssobce = null;
     private Table georsskp = null;
@@ -67,6 +68,7 @@ public class DatabaseHandler {
             this.setPublikaceTable(this.getConfig().getPublikaceTable());
             this.setAbstraktTable(this.getConfig().getAbstraktTable());
             this.setDatasetUpdateTable(this.getConfig().getDatasetUpdateTable());
+            this.setDatasetDeleteTable(this.getConfig().getDatasetDeleteTable());
             this.setGeorssStat(this.getConfig().getGeorssStat());
             this.setGeorssobce(this.getConfig().getGeorssObce());
             this.setGeorssku(this.getConfig().getGeorssKu());
@@ -1178,7 +1180,7 @@ public class DatabaseHandler {
     }
     //------------------------------------------------------------------------------------------------------------------
     /**
-     * Do tabulky atom2_dataset_update vloží dls_kódy všech fedů, které mají být aktualizovány.
+     * Do tabulky atom_dataset_update vloží dls_kódy všech fedů, které mají být aktualizovány.
      * @param files
      * @throws SQLException
      */
@@ -1195,6 +1197,35 @@ public class DatabaseHandler {
                             String.format(insert,
                                     this.getDatasetUpdateTable().getTableName(),
                                     this.getDatasetUpdateTable().getColumns().get("spatial_dataset_identifier_code"),
+                                    file.getInspire_dls_code()
+                            ));
+                }catch (SQLException err){
+                    // pokus o vlozeni stejneho dls_code - preskocit
+                }
+            }
+        }
+        finally {
+            try{ if(stmt != null) stmt.close(); }catch (Exception e){}
+        }
+    }
+    //------------------------------------------------------------------------------------------------------------------
+    /**
+     * Do tabulky atom_dataset_delete vloží dls_kódy všech fedů, které mají být smazány.
+     * @param files
+     * @throws SQLException
+     */
+    public void insertDeleteRequest(ArrayList<DatasetFile> files) throws SQLException{
+        Statement stmt = null;
+        String insert = "INSERT INTO %s (%s) VALUES ('%s')";
+
+        try{
+            stmt = conn.createStatement();
+            for(DatasetFile file : files) {
+                try {
+                    stmt.executeUpdate(
+                            String.format(insert,
+                                    this.getDatasetDeleteTable().getTableName(),
+                                    this.getDatasetDeleteTable().getColumns().get("spatial_dataset_identifier_code"),
                                     file.getInspire_dls_code()
                             ));
                 }catch (SQLException err){
@@ -1678,7 +1709,35 @@ public class DatabaseHandler {
     }
     //------------------------------------------------------------------------------------------------------------------
     /**
-     * Z tabulky atom2_dataset_update smaže záznam s daným dls_kódem
+     * Vrátí seznam dls_kódu datasetů, které mají být smazány.
+     * @return
+     * @throws SQLException
+     */
+    public ArrayList<String> getDeleteRequests() throws SQLException{
+
+        ArrayList<String> dls_codes = new ArrayList<>();
+
+        Statement stmt = null;
+        ResultSet rs = null;
+        String select = "SELECT %s FROM %s";
+        select = String.format(select,
+                this.getDatasetDeleteTable().getColumns().get("spatial_dataset_identifier_code"),
+                this.getDatasetDeleteTable().getTableName());
+        try{
+            stmt = conn.createStatement();
+            rs = stmt.executeQuery(select);
+            while (rs.next()){
+                dls_codes.add(rs.getString(1));
+            }
+        }finally {
+            try{ if(rs != null) rs.close(); }catch (Exception e){}
+            try{ if(stmt != null) stmt.close(); }catch (Exception e){}
+        }
+        return dls_codes;
+    }
+    //------------------------------------------------------------------------------------------------------------------
+    /**
+     * Z tabulky atom_dataset_update smaže záznam s daným dls_kódem
      * @param dlsCode
      * @throws SQLException
      */
@@ -1691,6 +1750,66 @@ public class DatabaseHandler {
                 this.getDatasetUpdateTable().getColumns().get("spatial_dataset_identifier_code"),
                 dlsCode
                 );
+        try{
+            stmt = conn.createStatement();
+            stmt.executeUpdate(delete);
+        }finally {
+            try{ if(stmt != null) stmt.close(); }catch (Exception e){}
+        }
+    }
+    //------------------------------------------------------------------------------------------------------------------
+    /**
+     * Z tabulky atom_dataset_delete smaže záznam s daným dls_kódem
+     * @param dlsCode
+     * @throws SQLException
+     */
+    public void deleteDeleteRequest(String dlsCode) throws SQLException{
+
+        Statement stmt = null;
+        String delete = "DELETE FROM %s WHERE %s = '%s'";
+        delete = String.format(delete,
+                this.getDatasetDeleteTable().getTableName(),
+                this.getDatasetDeleteTable().getColumns().get("spatial_dataset_identifier_code"),
+                dlsCode
+        );
+        try{
+            stmt = conn.createStatement();
+            stmt.executeUpdate(delete);
+        }finally {
+            try{ if(stmt != null) stmt.close(); }catch (Exception e){}
+        }
+    }
+    //------------------------------------------------------------------------------------------------------------------
+    /**
+     * Smaže všechno v tabulce atom_dataset_update
+     * @throws SQLException
+     */
+    public void clearDatasetUpdateTable() throws SQLException{
+
+        Statement stmt = null;
+        String delete = "DELETE FROM %s";
+        delete = String.format(delete,
+                this.getDatasetUpdateTable().getTableName()
+        );
+        try{
+            stmt = conn.createStatement();
+            stmt.executeUpdate(delete);
+        }finally {
+            try{ if(stmt != null) stmt.close(); }catch (Exception e){}
+        }
+    }
+    //------------------------------------------------------------------------------------------------------------------
+    /**
+     * Smaže všechno v tabulce atom_dataset_delete
+     * @throws SQLException
+     */
+    public void clearDatasetDeleteTable() throws SQLException{
+
+        Statement stmt = null;
+        String delete = "DELETE FROM %s";
+        delete = String.format(delete,
+                this.getDatasetDeleteTable().getTableName()
+        );
         try{
             stmt = conn.createStatement();
             stmt.executeUpdate(delete);
@@ -1937,6 +2056,14 @@ public class DatabaseHandler {
 
     public void setGeorssku(Table georssku) {
         this.georssku = georssku;
+    }
+
+    public Table getDatasetDeleteTable() {
+        return datasetDeleteTable;
+    }
+
+    public void setDatasetDeleteTable(Table datasetDeleteTable) {
+        this.datasetDeleteTable = datasetDeleteTable;
     }
     //------------------------------------------------------------------------------------------------------------------
     //PRIVATE METHODS
