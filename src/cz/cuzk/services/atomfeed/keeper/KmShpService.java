@@ -37,7 +37,7 @@ public class KmShpService extends Service {
 
                     dFile.setFile_name(file.getName().split("\\.")[0]);
                     dFile.setFile_extension(file.getName().split("\\.")[1]);
-                    dFile.setWebPath(source.getWebPath() + "/" + dir.getName() + "/" + dFile.getFile_name()
+                    dFile.setWebPath(source.getWebPath() + "/" + dFile.getFile_name()
                             + "." + dFile.getFile_extension());
                     SimpleDateFormat sdf = new SimpleDateFormat("dd.MM.yyyy:HH:mm:ss");
                     dFile.setUpdated(sdf.format(file.lastModified()));

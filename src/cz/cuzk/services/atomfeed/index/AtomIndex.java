@@ -55,8 +55,8 @@ public class AtomIndex {
         //Konfigurace
 
         Configuration cfg = new Configuration(Configuration.VERSION_2_3_23);
-        cfg.setDirectoryForTemplateLoading(new File("index"));
-        //cfg.setDirectoryForTemplateLoading(new File(getJarLocation() + "/index"));
+        //cfg.setDirectoryForTemplateLoading(new File("index"));
+        cfg.setDirectoryForTemplateLoading(new File(getJarLocation() + "/index"));
         cfg.setDefaultEncoding("UTF-8");
         cfg.setTemplateExceptionHandler(TemplateExceptionHandler.RETHROW_HANDLER);
 
