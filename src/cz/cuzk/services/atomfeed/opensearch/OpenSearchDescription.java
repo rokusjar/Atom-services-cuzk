@@ -63,8 +63,8 @@ public class OpenSearchDescription {
         //Konfigurace
 
         Configuration cfg = new Configuration(Configuration.VERSION_2_3_23);
-        cfg.setDirectoryForTemplateLoading(new File("templates"));
-        //cfg.setDirectoryForTemplateLoading(new File(getJarLocation() + "/templates"));
+        //cfg.setDirectoryForTemplateLoading(new File("templates"));
+        cfg.setDirectoryForTemplateLoading(new File(getJarLocation() + "/templates"));
         cfg.setDefaultEncoding("UTF-8");
         cfg.setTemplateExceptionHandler(TemplateExceptionHandler.RETHROW_HANDLER);
 

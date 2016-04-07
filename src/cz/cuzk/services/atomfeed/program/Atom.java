@@ -24,7 +24,7 @@ public class Atom {
     private static Logger logger = null;
     private static FileHandler fh = null;
     private static URL location = Atom.class.getProtectionDomain().getCodeSource().getLocation();
-    private static final Boolean JAR = false; //pokud chci debugovat tak false
+    private static final Boolean JAR = true; //pokud chci debugovat tak false
     //------------------------------------------------------------------------------------------------------------------
     public static void main(String[] args){
 

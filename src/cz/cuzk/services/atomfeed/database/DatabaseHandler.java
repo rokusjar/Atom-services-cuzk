@@ -852,7 +852,7 @@ public class DatabaseHandler {
                         this.getPublikaceTable().getColumns().get("datum_aktualizace_databaze"),
                         this.getPublikaceTable().getColumns().get("service_id"),
                         s.getCode()));
-                if(rs.next()){
+                while(rs.next()){
                     ChangedService chD = new ChangedService();
                     chD.setServiceCode(rs.getString(1));
                     chD.setDateOfChange(rs.getString(2));

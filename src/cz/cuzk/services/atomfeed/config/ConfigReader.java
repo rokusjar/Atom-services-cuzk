@@ -37,8 +37,8 @@ public class ConfigReader {
         InputStreamReader reader = null;
 
         try {
-            //fis = new FileInputStream(getJarLocation() + "/config.json");
-            fis = new FileInputStream("config.json");
+            fis = new FileInputStream(getJarLocation() + "/config.json");
+            //fis = new FileInputStream("config.json");
             reader = new InputStreamReader(fis, "UTF-8");
             Config config = gson.fromJson(reader, Config.class);
             this.configData = config;
