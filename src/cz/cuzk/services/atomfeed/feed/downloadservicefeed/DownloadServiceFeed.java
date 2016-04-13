@@ -70,7 +70,6 @@ public class DownloadServiceFeed extends AtomFeed{
 
                 entry.setTitle(this.getDb().getDatasetTitle(datasetCode));
                 entry.setId(this.getDb().getDatasetId(datasetCode));
-                this.getDb().setDatasetUpdatedToCTime(datasetCode);
                 entry.setUpdated(this.getDb().getDatasetUpdated(datasetCode));
                 entry.addAuthor(author);
                 entry.setRights(this.getDb().getMainFeedRights(serviceId));
@@ -113,7 +112,6 @@ public class DownloadServiceFeed extends AtomFeed{
                 entry.addLink(datasetFeed);
             }
 
-            //feedElement.setUpdated(this.getDb().getMainFeedLastUpdate(serviceId));
             this.getDb().setMainFeedUpdatedToCTime(serviceId);
             feedElement.setUpdated(getDb().getMainFeedUpdated(serviceId));
 
