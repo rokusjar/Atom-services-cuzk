@@ -68,7 +68,6 @@ public class DatasetFeed extends AtomFeed{
                 EntryElement entry = new EntryElement(this.getDocument());
                 this.getFeedElement().addEntry(entry);
 
-                //entry.setTitle(file.getFile_name() + "." + file.getFile_extension());
                 entry.setTitle(getDb().createFileTitle(datasetCode, file));
                 entry.setId(file.getWebPath());
                 entry.setUpdated(file.getUpdated());

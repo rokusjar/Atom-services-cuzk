@@ -211,7 +211,7 @@ public class DatabaseHandler {
     public String getMainFeedLastUpdate(String serviceId) throws SQLException{
         Statement stmt = null;
         ResultSet rs = null;
-        String query = "SELECT to_char(max(%s), 'RRRR-MM-DD')||'T'||to_char(max(%s), 'HH24:MI:SS')||'+01:00' FROM %s ";
+        String query = "SELECT to_char(max(%s), 'RRRR-MM-DD')||'T'||to_char(max(%s), 'HH24:MI:SS')||'+02:00' FROM %s ";
         query += "WHERE %s = '%s'";
         query = String.format(query,
                 this.datasetTable.getColumns().get("updated"),
@@ -299,7 +299,7 @@ public class DatabaseHandler {
         Statement stmt = null;
         ResultSet rs = null;
 
-        String query = "SELECT to_char(%s, 'RRRR-MM-DD')||'T'||to_char(%s, 'HH24:MI:SS')||'+01:00' FROM %s WHERE %s = '%s'";
+        String query = "SELECT to_char(%s, 'RRRR-MM-DD')||'T'||to_char(%s, 'HH24:MI:SS')||'+02:00' FROM %s WHERE %s = '%s'";
 
         query = String.format(query,
                 this.getServiceTable().getColumns().get("updated"),
@@ -474,7 +474,7 @@ public class DatabaseHandler {
         Statement stmt = null;
         ResultSet rs = null;
 
-        String query = "SELECT to_char(%s, 'RRRR-MM-DD')||'T'||to_char(%s, 'HH24:MI:SS')||'+01:00' FROM %s WHERE %s = '%s'";
+        String query = "SELECT to_char(%s, 'RRRR-MM-DD')||'T'||to_char(%s, 'HH24:MI:SS')||'+02:00' FROM %s WHERE %s = '%s'";
 
         query = String.format(query,
                 this.getDatasetTable().getColumns().get("updated"),
@@ -690,7 +690,7 @@ public class DatabaseHandler {
         Statement stmt = null;
         ResultSet rs = null;
         ArrayList<DatasetFile> files = new ArrayList<DatasetFile>();
-        String query = "SELECT %s, %s, %s, %s, %s, to_char(%s, 'RRRR-MM-DD')||'T'||to_char(%s, 'HH24:MI:SS')||'+01:00', %s, %s, %s, %s, %s, %s, %s, %s FROM %s WHERE %s = '%s'";
+        String query = "SELECT %s, %s, %s, %s, %s, to_char(%s, 'RRRR-MM-DD')||'T'||to_char(%s, 'HH24:MI:SS')||'+02:00', %s, %s, %s, %s, %s, %s, %s, %s FROM %s WHERE %s = '%s'";
 
         try{
 
