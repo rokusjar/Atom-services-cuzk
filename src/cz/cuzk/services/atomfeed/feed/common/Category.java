@@ -1,10 +1,6 @@
 package cz.cuzk.services.atomfeed.feed.common;
 
 /**
- * Created by jaromir.rokusek on 8/28/2015.
- */
-
-/**
  * Reprezentuje element category.
  * @author Jaromír Rokusek
  * @version 1.0

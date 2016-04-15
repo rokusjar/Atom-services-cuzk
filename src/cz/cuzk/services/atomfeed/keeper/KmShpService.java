@@ -8,7 +8,8 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 
 /**
- *
+ * Třída odvozená z abstraktní třídy Service. Je použita pro vytvoření stahovací služby pro katastrální mapu
+ * ve formátu SHP a DGN.
  */
 public class KmShpService extends Service {
 

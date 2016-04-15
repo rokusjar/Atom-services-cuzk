@@ -9,7 +9,8 @@ import java.util.ArrayList;
 import java.util.Collections;
 
 /**
- *
+ * Třída odvozená z abstraktní třídy Service. Je použita pro vytvoření stahovací služby pro katastrální mapu
+ * ve formátu VKM.
  */
 public class KmVkmService extends Service {
 

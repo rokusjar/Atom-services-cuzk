@@ -19,12 +19,9 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
 /**
- * Created by jaromir.rokusek on 8/23/2015.
- */
-
-/**
- * Třída AtomFeed je myšlena jako základní třída pro atom feed. Každá třída jejímž účelem je vytvořit atom feed
- * tuto třídu dědí a následně přepisuje abstraktní metodu construct, ve které by celý feed měl být sestaven.
+ * Třída AtomFeed je myšlena jako základní třída pro konstrukci Atom kanálu.
+ * Každá třída jejímž účelem je vytvořit kanál Atom tuto třídu dědí a následně přepisuje abstraktní metodu construct,
+ * ve které by celý kanál měl být sestaven.
  * @author Jaromír Rokusek
  * @version 1.0
  * @since 2015-08-23

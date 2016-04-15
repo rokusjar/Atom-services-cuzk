@@ -7,7 +7,11 @@ import java.io.File;
 import java.util.ArrayList;
 
 /**
- *
+ * Abstraktní třída představující stahovací službu. Má dvě povinné metody.
+ * Metoda {@link cz.cuzk.services.atomfeed.keeper.Service#getCurrentState} má vrátit
+ * pole objektů třídy {@link cz.cuzk.services.atomfeed.feed.common.DatasetFile} které představují
+ * předpřipravené soubory.
+ * metoda {@link cz.cuzk.services.atomfeed.keeper.Service#dlsCode} má sestavit identifikátor datasetu.
  */
 public abstract class Service {
 

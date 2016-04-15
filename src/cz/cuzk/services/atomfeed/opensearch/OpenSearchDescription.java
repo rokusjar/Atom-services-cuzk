@@ -20,7 +20,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * Singleton
+ * Třída zajišťuje generování opensearch description dokumentů a je vytvořena jako Singleton.
  */
 public class OpenSearchDescription {
 
@@ -30,6 +30,11 @@ public class OpenSearchDescription {
     private ArrayList<Dataset> datasets = new ArrayList<>();
     private static URL location = OpenSearchDescription.class.getProtectionDomain().getCodeSource().getLocation();
     //------------------------------------------------------------------------------------------------------------------
+    /**
+     * Načte data z konfiguračního souboru a připojí JDBC driver potřebný pro připojení do databáze.
+     * @throws InvalidConfigFileException
+     * @throws DriverException
+     */
     private OpenSearchDescription() throws InvalidConfigFileException, DriverException {
         ConfigReader cr = new ConfigReader();
         cr.read();
@@ -41,6 +46,12 @@ public class OpenSearchDescription {
         }
     }
     //------------------------------------------------------------------------------------------------------------------
+    /**
+     * Vrací instanci třídy. (Třída je Singleton)
+     * @return
+     * @throws InvalidConfigFileException
+     * @throws DriverException
+     */
     public static OpenSearchDescription getInstance() throws InvalidConfigFileException, DriverException {
         if(instance == null){
             instance = new OpenSearchDescription();
@@ -49,7 +60,7 @@ public class OpenSearchDescription {
     }
     //------------------------------------------------------------------------------------------------------------------
     /**
-     * Naplni sablonu daty a vygeneruje soubor do docasneho adresare definovaneho v konfiguracnim souboru.
+     * Naplní šablonu daty a vygeneruje soubor do dočasného adresáře definovaného v konfiguračním souboru.
      * @throws IOException
      * @throws TemplateException
      * @throws TableNotFoundException
@@ -88,7 +99,7 @@ public class OpenSearchDescription {
     }
     //------------------------------------------------------------------------------------------------------------------
     /**
-     * Pripoji se do databaze a zavola funci loadDatasets.
+     * připojí se do databáze a zavolá funci loadDatasets.
      * @throws TableNotFoundException
      * @throws SQLException
      * @throws DriverException
@@ -103,7 +114,7 @@ public class OpenSearchDescription {
     }
     //------------------------------------------------------------------------------------------------------------------
     /**
-     * Nacte z databaze data o datasetech dane sluzby a naplni arraylist datasets
+     * Načte z databáze data o datasetech dané služby a naplní ArrayList datasets.
      * @throws SQLException
      * @throws ColumnNotFoundException
      * @throws TableNotFoundException
@@ -144,6 +155,10 @@ public class OpenSearchDescription {
         }
     }
     //------------------------------------------------------------------------------------------------------------------
+    /**
+     * Varátí cestu k jar souboru.
+     * @return
+     */
     private static String getJarLocation(){
 
         String jarLocation = "";
@@ -156,6 +171,14 @@ public class OpenSearchDescription {
         return jarLocation.substring(1) + "\\";
     }
     //------------------------------------------------------------------------------------------------------------------
+    /**
+     * Připojí se do databáze.
+     * @throws SQLException
+     * @throws TableNotFoundException
+     * @throws DriverException
+     * @throws InvalidConfigFileException
+     * @throws ColumnNotFoundException
+     */
     private void connectToDatabase() throws SQLException, TableNotFoundException, DriverException,
             InvalidConfigFileException, ColumnNotFoundException {
 
@@ -163,12 +186,16 @@ public class OpenSearchDescription {
         this.conn.setAutoCommit(false);
     }
     //------------------------------------------------------------------------------------------------------------------
+    /**
+     * Odpojí se od databáze.
+     * @throws SQLException
+     */
     private void disconnectFromDatabase() throws SQLException{
         try { if(this.conn != null) this.conn.close();} catch (SQLException e){}
     }
     //------------------------------------------------------------------------------------------------------------------
     /**
-     * Nahraje vytvoreny OSD na FTP server nastaveny v konfiguracnim souboru.
+     * Nahraje vytvořený OSD na FTP server nastavený v konfiguračním souboru.
      * @throws IOException
      * @throws FTPException
      */
@@ -187,6 +214,10 @@ public class OpenSearchDescription {
         }
     }
     //------------------------------------------------------------------------------------------------------------------
+    /**
+     * Pomocná vnitřní třída, která představuje dataset. Udržuje si namespace a kód datasetu, které dohromady tvoří
+     * identifikátor, a název datasetu.
+     */
     public static class Dataset{
 
         private String namespace;

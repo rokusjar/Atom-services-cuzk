@@ -1,8 +1,7 @@
 package cz.cuzk.services.atomfeed.util.ftp;
 
 /**
- * Created by rokusekj on 10.2.2016.
- *
+ * Výjimka je vyhozena pokud dojde k chybě při použití třídy {@link cz.cuzk.services.atomfeed.util.ftp.MyFTPClient}.
  * @author Jaromir Rokusek
  */
 public class FTPException extends Exception {

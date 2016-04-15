@@ -24,12 +24,10 @@ import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-
 /**
-
+ * Třída Updater je hlavní třídou balíčku keeper. Má za úkol aktualizovat databázi, generovat kanály a vystavit je.
  */
 public class Updater {
-
     //------------------------------------------------------------------------------------------------------------------
     //DATA MEMBERS
     //------------------------------------------------------------------------------------------------------------------
@@ -44,6 +42,12 @@ public class Updater {
     //------------------------------------------------------------------------------------------------------------------
     //PUBLIC METHODS
     //------------------------------------------------------------------------------------------------------------------
+    /**
+     * Načte data z konfiguračního souboru a připojí driver pro práci s databází.
+     * @param logger kam má logovat
+     * @throws InvalidConfigFileException
+     * @throws DriverException
+     */
     public Updater(Logger logger) throws InvalidConfigFileException, DriverException {
 
         ConfigReader cr = new ConfigReader();
@@ -61,7 +65,16 @@ public class Updater {
         }
     }
     //------------------------------------------------------------------------------------------------------------------
-
+    /**
+     * Připojí potřebné disky ze sítě a připojí se do databáze.
+     * @throws IOException
+     * @throws InterruptedException
+     * @throws TableNotFoundException
+     * @throws SQLException
+     * @throws DriverException
+     * @throws InvalidConfigFileException
+     * @throws ColumnNotFoundException
+     */
     public void initialize() throws IOException, InterruptedException, TableNotFoundException, SQLException,
             DriverException, InvalidConfigFileException, ColumnNotFoundException {
 
@@ -69,6 +82,21 @@ public class Updater {
         this.connectToDatabase();
     }
     //------------------------------------------------------------------------------------------------------------------
+    /**
+     * Zjistí zda nějaká služba nebo složby potřebují aktualizovat a pokud ano provede aktualizaci a
+     * vystaví nové kanály.
+     * @throws DriverException
+     * @throws InvalidConfigFileException
+     * @throws ColumnNotFoundException
+     * @throws SQLException
+     * @throws TableNotFoundException
+     * @throws UnknownDatasetException
+     * @throws AtomFeedException
+     * @throws DownloadServiceNotFoundException
+     * @throws IOException
+     * @throws FTPException
+     * @throws TemplateException
+     */
     public void update() throws DriverException, InvalidConfigFileException, ColumnNotFoundException, SQLException,
             TableNotFoundException, UnknownDatasetException, AtomFeedException, DownloadServiceNotFoundException,
             IOException, FTPException, TemplateException {
@@ -120,6 +148,15 @@ public class Updater {
         }
     }
     //------------------------------------------------------------------------------------------------------------------
+    /**
+     * Sestavuje sdružující feedy, které jsou definovány v konfiguračním souboru.
+     * @throws AtomFeedException
+     * @throws InvalidConfigFileException
+     * @throws ColumnNotFoundException
+     * @throws SQLException
+     * @throws TableNotFoundException
+     * @throws DriverException
+     */
     private void updateCustomFeeds() throws AtomFeedException, InvalidConfigFileException, ColumnNotFoundException,
             SQLException, TableNotFoundException, DriverException {
 
@@ -133,8 +170,8 @@ public class Updater {
     }
     //------------------------------------------------------------------------------------------------------------------
     /**
-     * nejprve zavolá funkci deleteCancelFeeds, ktera smaže již neplatné datasetové feedy a poté vygenruje nové,
-     * nebo aktualizované datasetové feedy.
+     * Nejprve zavolá funkci deleteCancelFeeds, která smaže již neplatné datasetové kanály a poté vygeneruje nové,
+     * nebo aktualizované datasetové kanály.
      * @param serviceId
      * @throws SQLException
      * @throws TableNotFoundException
@@ -168,11 +205,10 @@ public class Updater {
         } else {
             logger.info("Zadne dataset feedy k aktualizaci.");
         }
-
     }
     //------------------------------------------------------------------------------------------------------------------
     /**
-     * Smaže z FTP serveru všechny datasetové feedy, které najde v tabulce atom_dataset_delete
+     * Smaže z FTP serveru všechny datasetové kanály, které najde v tabulce atom_dataset_delete.
      * @param serviceId
      * @throws SQLException
      * @throws IOException
@@ -203,9 +239,10 @@ public class Updater {
     }
     //------------------------------------------------------------------------------------------------------------------
     /**
-     * Přesune vygenerované feedy z dočasného uložiště do publikačního uložiště.
+     * Přesune vygenerované kanály z dočasného uložiště do publikačního uložiště.
      * Přepíše původní soubory čímž provede aktualizaci feedu.
      * @throws NullPointerException
+     * @deprecated Momentálně se kanály publikují na FTP server.
      */
     private void publishFeeds(String serviceId) throws NullPointerException, DownloadServiceNotFoundException {
         File tempDir = new File(this.config.getRepository().getTempRepository());
@@ -255,7 +292,7 @@ public class Updater {
     }
     //------------------------------------------------------------------------------------------------------------------
     /**
-     *
+     * Nakopíruje vygenerované kanály spolu s OSD dokumenty a novým indexem na FTP server.
      * @param serviceId
      * @throws IOException
      * @throws FTPException
@@ -320,7 +357,7 @@ public class Updater {
     }
     //------------------------------------------------------------------------------------------------------------------
     /**
-     * Vrátí jména souborů všech skupinových feedů (feedů které sdružují stahovací služby)
+     * Vrátí jména souborů všech sdružujících kanálů.
      * @return
      */
     private ArrayList<String> getCustomFeedsFileNames(){
@@ -355,6 +392,14 @@ public class Updater {
         logger.info("Docasny adresar promazan");
     }
     //------------------------------------------------------------------------------------------------------------------
+    /**
+     * Připojí se do databáze.
+     * @throws SQLException
+     * @throws TableNotFoundException
+     * @throws DriverException
+     * @throws InvalidConfigFileException
+     * @throws ColumnNotFoundException
+     */
     private void connectToDatabase() throws SQLException, TableNotFoundException, DriverException,
             InvalidConfigFileException, ColumnNotFoundException {
 
@@ -364,6 +409,10 @@ public class Updater {
         logger.info("Pripojení do databaze uspesne");
     }
     //------------------------------------------------------------------------------------------------------------------
+    /**
+     * Odpojí se od databáze.
+     * @throws SQLException
+     */
     private void disconnectFromDatabase() throws SQLException{
         this.conn.close();
     }
@@ -439,6 +488,16 @@ public class Updater {
         return sources;
     }
     //------------------------------------------------------------------------------------------------------------------
+    /**
+     * Aktualizuje tabulku atom_files.
+     * @param service
+     * @throws InvalidConfigFileException
+     * @throws ColumnNotFoundException
+     * @throws SQLException
+     * @throws TableNotFoundException
+     * @throws DriverException
+     * @throws UnknownDatasetException
+     */
     private void updateFilesTable(Service service) throws InvalidConfigFileException, ColumnNotFoundException, SQLException,
             TableNotFoundException, DriverException, UnknownDatasetException {
 
@@ -453,6 +512,11 @@ public class Updater {
         }
     }
     //------------------------------------------------------------------------------------------------------------------
+    /**
+     * Aktualizuje tabulku atom_datasets. Vkládá nové datasety a maže nepotřebné.
+     * @param service
+     * @throws SQLException
+     */
     private void updateDatasetTable(Service service) throws SQLException {
         this.insertNewDataset(service);
         this.deleteEmptyDataset();
@@ -488,11 +552,21 @@ public class Updater {
         }
     }
     //------------------------------------------------------------------------------------------------------------------
+    /**
+     * Vrací kódy nově vytvořených datasetů.
+     * @return
+     * @throws SQLException
+     */
     private ArrayList<String> getNewDataset() throws SQLException {
 
         return dbHandler.getNewDatasets();
     }
     //------------------------------------------------------------------------------------------------------------------
+    /**
+     * Vrací kódy prázdných datasetů. Prázdné datasety jsou mazány.
+     * @return
+     * @throws SQLException
+     */
     private ArrayList<String> getEmptyDataset() throws SQLException {
 
         return dbHandler.getEmptyDataset();
@@ -552,30 +626,78 @@ public class Updater {
         this.dbHandler.setDatasetUpdatedToCTime(datasetCode);
     }
     //------------------------------------------------------------------------------------------------------------------
+    /**
+     * Vrátí objekty datasetů, které mají být smazány.
+     * @param theme_id
+     * @return
+     * @throws SQLException
+     * @throws TableNotFoundException
+     * @throws DriverException
+     * @throws InvalidConfigFileException
+     * @throws ColumnNotFoundException
+     */
     private ArrayList<DatasetFile> getMissing(String theme_id) throws SQLException,
             TableNotFoundException, DriverException, InvalidConfigFileException, ColumnNotFoundException {
 
         return this.dbHandler.getMissingFiles(theme_id);
     }
     //------------------------------------------------------------------------------------------------------------------
+    /**
+     * Vrátí objekty datasetů, které mají být vytvořeny.
+     * @param theme_id
+     * @return
+     * @throws TableNotFoundException
+     * @throws DriverException
+     * @throws InvalidConfigFileException
+     * @throws ColumnNotFoundException
+     * @throws SQLException
+     */
     private ArrayList<DatasetFile> getNew(String theme_id) throws TableNotFoundException, DriverException,
             InvalidConfigFileException, ColumnNotFoundException, SQLException {
 
         return this.dbHandler.getNewFiles(theme_id);
     }
     //------------------------------------------------------------------------------------------------------------------
+    /**
+     * Vrátí objekty datasetů, které se změnily.
+     * @param theme_id
+     * @return
+     * @throws SQLException
+     * @throws TableNotFoundException
+     * @throws DriverException
+     * @throws InvalidConfigFileException
+     * @throws ColumnNotFoundException
+     */
     private ArrayList<DatasetFile> getModified(String theme_id) throws SQLException,
             TableNotFoundException, DriverException, InvalidConfigFileException, ColumnNotFoundException {
 
         return this.dbHandler.getModifiedFiles(theme_id);
     }
     //------------------------------------------------------------------------------------------------------------------
+    /**
+     * Smaže z databáze dosavadní informace o souborech.
+     * @param theme_id
+     * @throws TableNotFoundException
+     * @throws DriverException
+     * @throws InvalidConfigFileException
+     * @throws ColumnNotFoundException
+     * @throws SQLException
+     */
     private void deleteOldData(String theme_id) throws TableNotFoundException, DriverException,
             InvalidConfigFileException, ColumnNotFoundException, SQLException {
 
         this.dbHandler.deleteOldFilesData(theme_id);
     }
     //------------------------------------------------------------------------------------------------------------------
+    /**
+     * Vloží do databáze nová data o souborech.
+     * @param theme_id
+     * @throws TableNotFoundException
+     * @throws DriverException
+     * @throws InvalidConfigFileException
+     * @throws ColumnNotFoundException
+     * @throws SQLException
+     */
     private void setNewData(String theme_id) throws TableNotFoundException, DriverException,
             InvalidConfigFileException, ColumnNotFoundException, SQLException {
 
@@ -583,8 +705,8 @@ public class Updater {
     }
     //------------------------------------------------------------------------------------------------------------------
     /**
-     * Precte z databaze aktualni abstrakt a vlozi ho do tabulky atom_services - sloupec subtitle
-     * Dela update ne insert
+     * Prečte z databáze aktuálni abstrakt a vloží ho do tabulky atom_services do sloupce subtitle.
+     * Dělá update ne insert
      * @param serviceID
      * @throws SQLException
      */

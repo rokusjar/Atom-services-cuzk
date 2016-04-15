@@ -1,11 +1,7 @@
 package cz.cuzk.services.atomfeed.feed.common;
 
 /**
- * Created by jaromir.rokusek on 8/27/2015.
- */
-
-/**
- * Reprezentuje element Link. Konstruktor požaduje typ odkazu viz. {@link LinkType}
+ * Představuje element Link. Konstruktor požaduje typ odkazu viz. {@link LinkType}
  * Podle typu jsou automaticky nastaveny hodnoty atributu rel a type, tak aby odpovídali požadavkům INSPIRE.
  * Ostatní atributy je nutné nastavit pomocí příslušných metod.
  * @author Jaromír Rokusek

@@ -1,7 +1,7 @@
 package cz.cuzk.services.atomfeed.config;
 
 /**
- *
+ * Představuje JSON objekt z konfiguračního souboru, který definuje připojení na FTP server.
  */
 public class FTP {
     private String user;

@@ -1,9 +1,5 @@
 package cz.cuzk.services.atomfeed.feed.common;
 
-/**
- * Created by jaromir.rokusek on 8/23/2015.
- */
-
 import javax.xml.parsers.DocumentBuilder;
 
 /**

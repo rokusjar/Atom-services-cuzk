@@ -8,7 +8,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 
 /**
- *
+ * Třída odvozená z abstraktní třídy Service. Je použita pro vytvoření stahovacích služeb pro témata INSPIRE.
  */
 public class InspireService extends Service {
 

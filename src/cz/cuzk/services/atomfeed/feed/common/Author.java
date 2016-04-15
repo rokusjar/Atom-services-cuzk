@@ -1,11 +1,7 @@
 package cz.cuzk.services.atomfeed.feed.common;
 
 /**
- * Created by jaromir.rokusek on 8/27/2015.
- */
-
-/**
- * Reprezentuje element Author. Povinnou součástí je pouze element name.
+ * Představuje element Author. Povinnou součástí je pouze element name.
  * Obsah elementů se nastavuje pomocí příslušných metod.
  * @author Jaromír Rokusek
  * @version 1.0

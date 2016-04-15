@@ -1,7 +1,7 @@
 package cz.cuzk.services.atomfeed.database;
 
 /**
- * Vyhozena kdyz neni nalezen SQLite JDBC driver
+ * Vyhozena když není nalezen JDBC driver.
  */
 public class DriverException extends Exception {
     public DriverException(String message){

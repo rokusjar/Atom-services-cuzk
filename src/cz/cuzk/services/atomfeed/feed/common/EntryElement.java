@@ -1,9 +1,5 @@
 package cz.cuzk.services.atomfeed.feed.common;
 
-/**
- * Created by jaromir.rokusek on 8/16/2015.
- */
-
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
@@ -22,7 +18,6 @@ import java.util.Date;
  * @since 2015-08-16
  */
 public class EntryElement {
-    //TODO Pridat kontrolu georss
     //------------------------------------------------------------------------------------------------------------------
     //DATA MEMBERS
     //------------------------------------------------------------------------------------------------------------------
