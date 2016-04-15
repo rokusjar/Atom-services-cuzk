@@ -4,7 +4,6 @@ import cz.cuzk.services.atomfeed.config.*;
 import cz.cuzk.services.atomfeed.database.DriverException;
 import cz.cuzk.services.atomfeed.util.ftp.FTPException;
 import cz.cuzk.services.atomfeed.util.ftp.MyFTPClient;
-import freemarker.core.ParseException;
 import freemarker.template.*;
 
 import java.io.*;
@@ -16,9 +15,8 @@ import java.util.Map;
 
 /**
  * @author Jaromir Rokusek
- * Generuje index.html pro stranku atom.cuzk.cz.
- *
- * Singleton
+ * Generuje stránku atom.cuzk.cz. Je to Singleton.
+ * Využívá knihovnu freemarker pro tvorbu html šablony.
  */
 public class AtomIndex {
 
@@ -28,8 +26,11 @@ public class AtomIndex {
     private ArrayList<Service> services = new ArrayList<>();
     private static URL location = AtomIndex.class.getProtectionDomain().getCodeSource().getLocation();
     //------------------------------------------------------------------------------------------------------------------
-
-    //------------------------------------------------------------------------------------------------------------------
+    /**
+     * Načte data z konfiguračního souboru a driver pro připijení do databáze.
+     * @throws InvalidConfigFileException
+     * @throws DriverException
+     */
     private AtomIndex() throws InvalidConfigFileException, DriverException {
 
         ConfigReader cr = new ConfigReader();
@@ -42,6 +43,12 @@ public class AtomIndex {
         }
     }
     //------------------------------------------------------------------------------------------------------------------
+    /**
+     * Vrací instanci třídy (Třída je Singleton).
+     * @return
+     * @throws InvalidConfigFileException
+     * @throws DriverException
+     */
     public static AtomIndex getInstance() throws InvalidConfigFileException, DriverException {
 
         if(instance == null){
@@ -50,6 +57,16 @@ public class AtomIndex {
         return instance;
     }
     //------------------------------------------------------------------------------------------------------------------
+    /**
+     * načte šablonu, naplní ji daty a vygeneruje html stránku s názvem index.html.
+     * @throws IOException
+     * @throws TableNotFoundException
+     * @throws SQLException
+     * @throws DriverException
+     * @throws InvalidConfigFileException
+     * @throws ColumnNotFoundException
+     * @throws TemplateException
+     */
     public void createIndex() throws IOException, TableNotFoundException, SQLException, DriverException,
             InvalidConfigFileException, ColumnNotFoundException, TemplateException {
         //Konfigurace
@@ -80,7 +97,7 @@ public class AtomIndex {
     }
     //------------------------------------------------------------------------------------------------------------------
     /**
-     * Nahraje vytvoreny index na FTP server nastaveny v konfiguracnim souboru.
+     * Nahraje vytvořený index na FTP server nastavený v konfiguračním souboru.
      * @throws IOException
      * @throws FTPException
      */
@@ -99,6 +116,10 @@ public class AtomIndex {
         }
     }
     //------------------------------------------------------------------------------------------------------------------
+    /**
+     * Vrátí cestu k jar souboru.
+     * @return
+     */
     private static String getJarLocation(){
 
         String jarLocation = "";
@@ -111,6 +132,14 @@ public class AtomIndex {
         return jarLocation.substring(1) + "\\";
     }
     //------------------------------------------------------------------------------------------------------------------
+    /**
+     * Načítá datový model. Data získá z databáze.
+     * @throws TableNotFoundException
+     * @throws SQLException
+     * @throws DriverException
+     * @throws InvalidConfigFileException
+     * @throws ColumnNotFoundException
+     */
     private void loadModel() throws TableNotFoundException, SQLException, DriverException, InvalidConfigFileException,
             ColumnNotFoundException {
 
@@ -120,8 +149,8 @@ public class AtomIndex {
     }
     //------------------------------------------------------------------------------------------------------------------
     /**
-     * Nacte z databaze data o stahovacich sluzbach.
-     * Vytvori objekty tridy Service a naplni jimi ArrayList services
+     * Načte z databáze data o stahovacích službach.
+     * Vytvoří objekty třídy Service a naplní jimi ArrayList services.
      * @throws SQLException
      */
     private void loadServiceData() throws SQLException, ColumnNotFoundException, TableNotFoundException {
@@ -164,7 +193,7 @@ public class AtomIndex {
     }
     //------------------------------------------------------------------------------------------------------------------
     /**
-     * Nacte z databaze abstrakt k dane stahovaci sluzbe.
+     * Načte z databáze abstrakt k dané stahovací službě.
      * @param serviceId
      * @throws SQLException
      */
@@ -193,7 +222,7 @@ public class AtomIndex {
     }
     //------------------------------------------------------------------------------------------------------------------
     /**
-     * Nacte z databaze datum posledni aktualizace stahovaci sluzby a vrati ho v pozadovanem formatu.
+     * Načte z databáze datum poslední aktualizace stahovací služby a vratí ho v požadovaném formátu.
      * @param serviceId
      * @return
      * @throws SQLException
@@ -228,7 +257,7 @@ public class AtomIndex {
     }
     //------------------------------------------------------------------------------------------------------------------
     /**
-     * Na zaklade serviceId zaradi sluzbu do prislusne kategorie v ramci index.html
+     * Na základě serviceId zařadí službu do příslušné kategorie v rámci index.html
      * @param serviceId
      * @return
      */
@@ -244,6 +273,14 @@ public class AtomIndex {
         return category;
     }
     //------------------------------------------------------------------------------------------------------------------
+    /**
+     * Připojí se do databáze.
+     * @throws SQLException
+     * @throws TableNotFoundException
+     * @throws DriverException
+     * @throws InvalidConfigFileException
+     * @throws ColumnNotFoundException
+     */
     private void connectToDatabase() throws SQLException, TableNotFoundException, DriverException,
             InvalidConfigFileException, ColumnNotFoundException {
 
@@ -251,10 +288,17 @@ public class AtomIndex {
         this.conn.setAutoCommit(false);
     }
     //------------------------------------------------------------------------------------------------------------------
+    /**
+     * Odpojí se od databáze.
+     * @throws SQLException
+     */
     private void disconnectFromDatabase() throws SQLException{
         try { if(this.conn != null) this.conn.close();} catch (SQLException e){}
     }
     //------------------------------------------------------------------------------------------------------------------
+    /**
+     * Pomocná vnitřní třída, která udržuje informace o stahovací službě.
+     */
     public static class Service{
         private String lastUpdate;
         private String abstrakt;

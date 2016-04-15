@@ -9,7 +9,7 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 
 /**
- *
+ * Třída pro generování datasetových kanálů stahovacích služeb Atom.
  */
 public class DatasetFeed extends AtomFeed{
 

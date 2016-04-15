@@ -11,7 +11,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /**
- *
+ * Třída slouží pro konstrukci sdružujících kanálů.
  */
 public class ServiceGroupFeed extends AtomFeed{
 

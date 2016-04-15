@@ -1,13 +1,10 @@
 package cz.cuzk.services.atomfeed.feed.common;
 
-//import cz.cuzk.services.atomfeed.logger.Level;
-
-
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /**
- * Objekty této třídy reprezentují jednotlivé soubory datasetu a usnaďnují práci s informacemi při čtení databáze.
+ * Objekty této třídy představují jednotlivé soubory datasetu a usnaďnují práci s informacemi při čtení databáze.
  */
 //----------------------------------------------------------------------------------------------------------------------
 public class DatasetFile {

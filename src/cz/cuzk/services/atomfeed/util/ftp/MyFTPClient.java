@@ -9,14 +9,11 @@ import java.io.IOException;
 import java.io.InputStream;
 
 /**
- * Created by rokusekj on 9.2.2016.
- *
- *
  * @author Jaromir Rokusek
  * @version 1.0
  *
- * Trida slouzi jako jednoduchy FTP klient. Verze 1.0 umi nahravat a mazat soubory.
- * pro nahrani slouzi funkce upload. Pro mazani funkce deleteFile.
+ * Trida slouží jako jednoduchý FTP klient.
+ * Pro nahrání dat na FTP server slouží funkce upload. Pro mazání dat slouží funkce deleteFile.
  */
 public class MyFTPClient{
 
@@ -25,13 +22,13 @@ public class MyFTPClient{
     public MyFTPClient(){}
     //------------------------------------------------------------------------------------------------------------------
     /**
-     * Nahraje soubor na FTP server. Nahrany soubor bude mit svuj nazev.
-     * Pokud soubor existuje tak je prepsan.
-     * @param localFile soubor ktery ma byt nahran
-     * @param remotePath cesta na ftp serveru kam ma byt soubor ulozen. Muze byt relativni
-     * @return True if successfully completed, false if not.
+     * Nahraje soubor na FTP server. Nahraný soubor bude mít svůj název.
+     * Pokud soubor existuje tak je přepsán.
+     * @param localFile soubor který má být nahrán
+     * @param remotePath cesta na ftp serveru kam ma být soubor uložen. Může být relativní.
+     * @return True pokud funkce doběhne bez problému, jinak False
      * @throws IOException
-     * @throws cz.rokusek.util.ftp.FTPException kdyz se operace nepodari - storeFile vrati false
+     * @throws cz.rokusek.util.ftp.FTPException kdyz se operace nepodaří - storeFile vratí false
      */
     public void upload(File localFile, String remotePath) throws IOException, FTPException {
 
@@ -66,14 +63,14 @@ public class MyFTPClient{
     }
     //------------------------------------------------------------------------------------------------------------------
     /**
-     * Nahraje soubor na FTP server. Nahrany soubor bude mit nazev remoteFileName.
-     * Pokud soubor existuje tak je prepsan.
-     * @param localFile soubor ktery ma byt nahran
-     * @param remoteFileName nazev nahraneho souboru
-     * @param remotePath cesta na ftp serveru kam ma byt soubor ulozen. Muze byt relativni
-     * @return True if successfully completed, false if not.
+     * Nahraje soubor na FTP server. Nahraný soubor bude mít název remoteFileName.
+     * Pokud soubor existuje tak je přepsán.
+     * @param localFile soubor který má být nahrán
+     * @param remoteFileName název nahraného souboru
+     * @param remotePath cesta na ftp serveru kam má být soubor ulozen. Může být relativní
+     * @return True pokud funkce doběhne bez problému, jinak False
      * @throws IOException
-     * @throws cz.rokusek.util.ftp.FTPException kdyz se operace nepodari - storeFile vrati false
+     * @throws cz.rokusek.util.ftp.FTPException kdyz se operace nepodari - storeFile vrátí false
      */
     public void upload(File localFile, String remoteFileName, String remotePath) throws IOException, FTPException {
 
@@ -106,12 +103,12 @@ public class MyFTPClient{
     }
     //------------------------------------------------------------------------------------------------------------------
     /**
-     * Vytvori na FTP serveru adresar.
-     * @param dirName nazev adresare
-     * @param remotePath cesta kam ma byt vytvoren - bez posledniho lomitka
+     * Vytvoří na FTP serveru adresář.
+     * @param dirName název adresáře
+     * @param remotePath cesta kam má být adresář vytvořen - bez posledního lomítka
      * @return
      * @throws IOException
-     * @throws cz.rokusek.util.ftp.FTPException kdyz se operace nepodari - makeDirecotry vrati false
+     * @throws cz.rokusek.util.ftp.FTPException když se operace nepodaří - makeDirectory vrátí false
      */
     public void makeDirectory(String dirName, String remotePath) throws IOException, FTPException {
 
@@ -138,9 +135,9 @@ public class MyFTPClient{
     }
     //------------------------------------------------------------------------------------------------------------------
     /**
-     * Odtsrani z FTP serveru adresar
+     * Odtsraní z FTP serveru adresář.
      * @param pathName
-     * @throws FTPException kdyz funkce removeDirectory vrati false
+     * @throws FTPException když funkce removeDirectory vrátí False.
      * @throws IOException
      */
     public void removeDirectory(String pathName) throws FTPException, IOException {
@@ -164,7 +161,7 @@ public class MyFTPClient{
     }
     //------------------------------------------------------------------------------------------------------------------
     /**
-     * Vraci true pokud adresar urceny cestou fullPathName na FTP serveru existuje
+     * Vrací true pokud adresář určený cestou fullPathName na FTP serveru existuje.
      * @param fullPathName
      * @return
      * @throws IOException
@@ -181,7 +178,7 @@ public class MyFTPClient{
     }
     //------------------------------------------------------------------------------------------------------------------
     /**
-     * Vrati aktualni pracovni adresar FTP serveru.
+     * Vrátí aktuální pracovní adresář FTP serveru.
      * @return
      * @throws IOException
      * @throws FTPException
@@ -193,6 +190,12 @@ public class MyFTPClient{
         return this.ftpClient.printWorkingDirectory();
     }
     //------------------------------------------------------------------------------------------------------------------
+    /**
+     * Změní pracovní adresář na FTp serveru.
+     * @param pathName
+     * @throws FTPException
+     * @throws IOException
+     */
     public void changeWorkingDirectory(String pathName) throws FTPException, IOException {
         if(!this.isConnected()) {
             throw new FTPException("FTP server neni pripojen");
@@ -212,9 +215,9 @@ public class MyFTPClient{
     }
     //------------------------------------------------------------------------------------------------------------------
     /**
-     * Smaze soubor z FTP serveru
-     * @param pathname cesta k souboru ktery ma byt smazan, muze byt relativni
-     * @return True if successfully completed, false if not.
+     * Smaže soubor z FTP serveru
+     * @param pathname cesta k souboru ktery ma byt smazán, může být relativní.
+     * @return True pokud funkce doběhne bez problému, jinak False
      * @throws IOException
      * @throws cz.rokusek.util.ftp.FTPException kdyz se operace nepodari - deleteFile vrati false
      */
@@ -239,11 +242,11 @@ public class MyFTPClient{
     }
     //------------------------------------------------------------------------------------------------------------------
     /**
-     * Pripoji se k FTP serveru.
-     * Pokud je zadan port tak ho pouzije. Pokud neni zadan port pouzije port 21.
-     * Nastavi pasivni mod a typ prenasenych souboru na FTP.BINARY_FILE_TYPE coz znamena libovolny typ souboru.
+     * Připojí se k FTP serveru.
+     * Pro připojení použije port 21.
+     * Nastaví pasivní mód a typ prenášených souborů na FTP.BINARY_FILE_TYPE což znamená libovolný typ souboru.
      * @return
-     * @throws IOException If the socket could not be opened or if the hostname cannot be resolved.
+     * @throws IOException Pokud se nepodaří otevřít socket, nebo rozpoznat host.
      */
     public void connect(String host, String user, String password) throws IOException{
 
@@ -258,11 +261,10 @@ public class MyFTPClient{
     }
     //------------------------------------------------------------------------------------------------------------------
     /**
-     * Pripoji se k FTP serveru.
-     * Pokud je zadan port tak ho pouzije. Pokud neni zadan port pouzije port 21.
-     * Nastavi pasivni mod a typ prenasenych souboru na FTP.BINARY_FILE_TYPE coz znamena libovolny typ souboru.
+     * Připojí se k FTP serveru.
+     * Nastaví pasivní mód a typ prenášených souborů na FTP.BINARY_FILE_TYPE což znamená libovolný typ souboru.
      * @return
-     * @throws IOException If the socket could not be opened or if the hostname cannot be resolved.
+     * @throws IOException Pokud se nepodaří otevřít socket, nebo rozpoznat host.
      */
     public void connect(String host, String user, String password, Integer port) throws IOException{
 
@@ -277,7 +279,7 @@ public class MyFTPClient{
     }
     //------------------------------------------------------------------------------------------------------------------
     /**
-     * Odpoji se od FTP serveru.
+     * Odpojí se od FTP serveru.
      * @throws IOException
      */
     public void disconnect() throws IOException {
@@ -290,7 +292,7 @@ public class MyFTPClient{
     }
     //------------------------------------------------------------------------------------------------------------------
     /**
-     * Vrati true pokud je FTP server pripojen
+     * Vratí true pokud je FTP server připojen.
      * @return
      */
     public boolean isConnected(){

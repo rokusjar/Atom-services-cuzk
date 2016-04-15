@@ -11,7 +11,6 @@ import java.util.HashMap;
  * @version 1.0
  * @since 2015-08-23
  */
-//----------------------------------------------------------------------------------------------------------------------
 public class Config {
     private DbConnection dbConn;
     private DownloadService[] downloadService;

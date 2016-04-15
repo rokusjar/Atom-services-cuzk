@@ -20,6 +20,15 @@ import java.util.logging.Logger;
 import java.util.logging.SimpleFormatter;
 
 //----------------------------------------------------------------------------------------------------------------------
+/**
+ * Hlavní třída obsahující metodu Main.
+ *
+ * Zajišťuj, že program běží vždy jenom jednou. Při spuštění vytváří soubor, který po ukončení práce smaže a vypne se.
+ * Zároveň při spuštění kontroluje, zda tento soubor existuje, pokud ano, tak je jasné, že program již jednou běží.
+ *
+ * Kromě toho se třída Atom stará o logování. Pro každé spuštění vytváří jeden log. Každý den vytvoří nový adresář,
+ * do kterého logy ukládá.
+ */
 public class Atom {
     private static Logger logger = null;
     private static FileHandler fh = null;
@@ -110,8 +119,8 @@ public class Atom {
     }
     //------------------------------------------------------------------------------------------------------------------
     /**
-     * Pokud adresar logs neexistuje, tak ho vytvori
-     * @param jar nastavit na true pokud bude program spousten z jaru, pokud bude spousten jinak tak false
+     * Pokud adresář logs neexistuje, tak ho vytvoří.
+     * @param jar nastavit na true pokud bude program spoustěn z jaru, pokud bude spoustěn jinak tak false
      */
     private static void createLogDir(Boolean jar){
         if(jar) {
@@ -128,8 +137,8 @@ public class Atom {
     }
     //------------------------------------------------------------------------------------------------------------------
     /**
-     * Vytvori file handler pro logger
-     * @param jar nastavit na true pokud bude program spousten z jaru, pokud bude spousten jinak tak false
+     * Vytvoří file handler pro logger
+     * @param jar nastavit na true pokud bude program spoustěn z jaru, pokud bude spoustěn jinak tak false
      */
     private static FileHandler createFileHandlerForLogging(Boolean jar) throws IOException {
         FileHandler fh = null;
@@ -141,6 +150,10 @@ public class Atom {
         return fh;
     }
     //------------------------------------------------------------------------------------------------------------------
+    /**
+     * Vrátí cestu k jar souboru.
+     * @return
+     */
     private static String getJarLocation(){
 
         String jarLocation = "";
@@ -153,12 +166,19 @@ public class Atom {
         return jarLocation.substring(1) + "\\";
     }
     //------------------------------------------------------------------------------------------------------------------
+    /**
+     * Vytvoří soubor, který značí že program běží.
+     * @throws IOException
+     */
     private static void createRunningFile() throws IOException {
         File runningFile = new File("running.log");
         //File runningFile = new File(getJarLocation() + "running.log");
         runningFile.createNewFile();
     }
     //------------------------------------------------------------------------------------------------------------------
+    /**
+     * Smaže soubor, který značí že program běží.
+     */
     private static void deleteRunningFile(){
         File runningFile = new File("running.log");
         //File runningFile = new File(getJarLocation() + "running.log");
@@ -167,6 +187,10 @@ public class Atom {
         }
     }
     //------------------------------------------------------------------------------------------------------------------
+    /**
+     * Kontroluje zda existuje soubor, který značí že program již běží.
+     * @return
+     */
     private static boolean isRunning(){
         Boolean result = true;
         File runningFile = new File("running.log");

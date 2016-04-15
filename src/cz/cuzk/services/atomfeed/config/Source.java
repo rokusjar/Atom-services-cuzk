@@ -1,7 +1,7 @@
 package cz.cuzk.services.atomfeed.config;
 
 /**
- *
+ * Předsatvuje JSON objekt, který definuje zdroj dat stahovací služby, což je adresář na síti.
  */
 public class Source {
 

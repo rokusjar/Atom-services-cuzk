@@ -1,8 +1,8 @@
 package cz.cuzk.services.atomfeed.config;
 
 /**
- * Vyhozena kdyz v konfiguracnim souboru neni nalezeno schema nektere tabulky.
- * Tabulky jsou hledany podle atributu type.
+ * Vyhozena když v konfiguračním souboru není nalezeno schéma některé tabulky.
+ * Tabulky jsou hledány podle atributu type.
  */
 public class TableNotFoundException extends Exception{
     public TableNotFoundException(String message){

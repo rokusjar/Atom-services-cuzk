@@ -9,12 +9,11 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 
 /**
- *
+ * Třída odvozená z abstraktní třídy Service. Je použita pro vytvoření všech stahovacích služeb RÚIAN.
  */
 public class RuianService extends Service {
 
     Boolean csv = false;
-    //
 
     public RuianService(ArrayList<Source> sources, String themeCode, String dateOfChange){
         this.setSources(sources);

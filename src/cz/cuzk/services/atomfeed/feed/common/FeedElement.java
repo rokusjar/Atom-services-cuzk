@@ -11,7 +11,6 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 //----------------------------------------------------------------------------------------------------------------------
-//TODO doplnit @param
 /**
  * Slouží k vytvoření feed elementu.
  * Konstruktoru je nutné předat objekt reprezentující dokument do kterého má být záznam zapsán.

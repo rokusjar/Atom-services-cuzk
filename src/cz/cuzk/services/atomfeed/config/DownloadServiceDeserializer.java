@@ -6,7 +6,7 @@ import java.lang.reflect.Type;
 import java.util.ArrayList;
 
 /**
- *
+ * Slouží pro převod json objektu na java objekt. Zpracovává objekty stahovacích služeb.
  */
 public class DownloadServiceDeserializer implements JsonDeserializer<DownloadService>{
 

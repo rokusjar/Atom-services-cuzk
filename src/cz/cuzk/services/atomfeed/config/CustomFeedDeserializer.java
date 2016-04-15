@@ -6,7 +6,7 @@ import java.lang.reflect.Type;
 import java.util.ArrayList;
 
 /**
- * Created by rokusekj on 14.12.2015.
+ * Slouží pro převod json objektu na java objekt. Zpracovává objekty definující sdružující kanály.
  */
 public class CustomFeedDeserializer implements JsonDeserializer<CustomFeed> {
 

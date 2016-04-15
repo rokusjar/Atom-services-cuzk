@@ -5,10 +5,6 @@ import java.net.URL;
 import java.util.HashMap;
 
 /**
- * Created by rokusekj on 22.9.2015.
- */
-
-/**
  * Slouží k přečtení konfiguračního souboru. Ten je přečten pomocí metody read().
  * Všechny údaje z konfiguračního souboru jsou pak uloženy v proměnné configData,
  * která je objektem třídy Config.

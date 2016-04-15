@@ -5,7 +5,7 @@ import com.google.gson.*;
 import java.lang.reflect.Type;
 
 /**
- * Definuje převod JSON objektu na objekt v Javě.
+ * Definuje převod  hlavního JSON objektu z konfiguračního souboru na objekt v Javě.
  * @author Jaromír Rokusek
  * @version 1.0
  * @since 2015-08-23

@@ -3,7 +3,7 @@ package cz.cuzk.services.atomfeed.config;
 import java.util.ArrayList;
 
 /**
- *
+ * Představuje sdružující kanál definovaný v konfiguračním souboru.
  */
 public class CustomFeed {
 

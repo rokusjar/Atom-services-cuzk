@@ -18,8 +18,8 @@ import java.util.Date;
  * Některé metody se sami připojují a odpojují od databáze a některé vyžadují aby připojení již bylo definováno.
  * Z toho důvodu tady existují dva konstruktory.
  * Třída keeper.Keeper je jedinou třídou, která do databáze něco zapisuje a jako jediná používá konstruktor
- * s parametrem Connection conn, protože musí řešit commit.
- * Ostatní třídy používají konstruktor bez parametru, protože databázi jenom čtou a nemusí řešit žádný commit.
+ * s parametrem Connection conn.
+ * Ostatní třídy používají konstruktor bez parametru, protože databázi pouze čtou.
  */
 public class DatabaseHandler {
     //------------------------------------------------------------------------------------------------------------------

@@ -9,7 +9,7 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 
 /**
- * Created by jaromir.rokusek on 8/29/2015.
+ * Třída pro generování hlavních kanálů stahovacích služeb Atom.
  */
 public class DownloadServiceFeed extends AtomFeed{
 

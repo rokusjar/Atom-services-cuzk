@@ -1,7 +1,7 @@
 package cz.cuzk.services.atomfeed.feed.common;
 
 /**
- * Popisuje v jakem stavu se element nachází. Je Určena pro popis feed a entry elementů.
+ * Popisuje v jakém stavu se element nachází. Je Určena pro popis feed a entry elementů.
  * Viz třídy {@link FeedElement#state} a {@link EntryElement#state}
  * @author Jaromír Rokusek
  * @version 1.0
