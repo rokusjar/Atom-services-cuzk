@@ -38,6 +38,7 @@ public class Atom {
     public static void main(String[] args){
 
         Updater updater = null;
+        //Ja jsem master branch
 
         try {
             //Aby program nemohl bezet vicekrat
