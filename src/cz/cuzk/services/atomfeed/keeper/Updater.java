@@ -126,7 +126,6 @@ public class Updater {
                 this.updateFeeds(service.getServiceId());
                 this.updateCustomFeeds();
 
-                //publishFeeds(service.getServiceId());
                 publishFeedsToFTP(service.getServiceId());
 
                 this.dbHandler.commitChangesToDatabase(service.getServiceId(), service.getDateOfChange());
@@ -229,7 +228,8 @@ public class Updater {
 
                 for (String dlsCode : dlsCodes) {
 
-                    myFTPClient.deleteFile("atom/" + serviceId + "/datasetFeeds/" + dlsCode + ".xml");
+                    myFTPClient.deleteFile(this.config.getRepository().getRepository() + "/" + serviceId +
+                            "/datasetFeeds/" + dlsCode + ".xml");
                     dbHandler.deleteDeleteRequest(dlsCode);
                 }
             } finally {
@@ -248,7 +248,7 @@ public class Updater {
         File tempDir = new File(this.config.getRepository().getTempRepository());
         String mainFeed = serviceId + ".xml";
 
-        File datasetMetadataDir = new File(this.config.getRepository().getLocalRepository() + "\\" + serviceId
+        File datasetMetadataDir = new File(this.config.getRepository().getRepository() + "\\" + serviceId
                 + "\\datasetMetadata");
         if(!datasetMetadataDir.exists()){
             datasetMetadataDir.mkdirs();
@@ -258,7 +258,7 @@ public class Updater {
             if(file.isFile()){
                 if(file.getName().equals(mainFeed)){
                     //Hlavni feed
-                    File newDir = new File(this.config.getRepository().getLocalRepository()
+                    File newDir = new File(this.config.getRepository().getRepository()
                             + "\\" + serviceId);
 
                     if(!newDir.exists()){
@@ -270,13 +270,13 @@ public class Updater {
 
                 }else if(getCustomFeedsFileNames().contains(file.getName().split("\\.")[0])){
                     //sdruzujici feedy
-                    File newFile = new File(this.config.getRepository().getLocalRepository() + "\\" + file.getName());
+                    File newFile = new File(this.config.getRepository().getRepository() + "\\" + file.getName());
                     newFile.delete();
                     file.renameTo(newFile);
 
                 }else{
                     //datasetove feedy
-                    File newDir = new File(this.config.getRepository().getLocalRepository()
+                    File newDir = new File(this.config.getRepository().getRepository()
                             + "\\" + serviceId + "\\datasetFeeds");
 
                     if(!newDir.exists()){
@@ -309,11 +309,11 @@ public class Updater {
                     this.config.getFtp().getPassword());
 
             File hlavniFeed = null;
-            String ftpDirPath = this.config.getRepository().getLocalRepository();
+            String ftpDirPath = this.config.getRepository().getRepository();
             if (!ftpClient.directoryExist(ftpDirPath + "/" + serviceId)) {
                 ftpClient.makeDirectory(serviceId, ftpDirPath);
             }
-            String datasetDirPath = this.config.getRepository().getLocalRepository() + "/" + serviceId + "/datasetFeeds";
+            String datasetDirPath = this.config.getRepository().getRepository() + "/" + serviceId + "/datasetFeeds";
 
             if (!ftpClient.directoryExist(datasetDirPath)) {
                 ftpClient.makeDirectory("datasetFeeds", ftpDirPath + "/" + serviceId);

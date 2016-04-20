@@ -13,7 +13,7 @@ public class Repository {
         return tempRepository;
     }
 
-    public String getLocalRepository() {
+    public String getRepository() {
         return Repository;
     }
 

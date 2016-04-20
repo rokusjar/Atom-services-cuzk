@@ -110,7 +110,7 @@ public class AtomIndex {
         File index = new File(this.config.getRepository().getTempRepository() + "/index.html");
 
         if(index.exists()) {
-            ftpClient.upload(new File(this.config.getRepository().getTempRepository() + "/index.html"), "atom");
+            ftpClient.upload(index, this.config.getRepository().getRepository());
         }else{
             System.out.println(index.getAbsolutePath() + " nenalezen");
         }
