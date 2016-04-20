@@ -8,6 +8,7 @@ import javafx.scene.control.Tab;
 import java.sql.*;
 import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
+import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
 import java.util.Date;
@@ -211,11 +212,14 @@ public class DatabaseHandler {
     public String getMainFeedLastUpdate(String serviceId) throws SQLException{
         Statement stmt = null;
         ResultSet rs = null;
-        String query = "SELECT to_char(max(%s), 'RRRR-MM-DD')||'T'||to_char(max(%s), 'HH24:MI:SS')||'+02:00' FROM %s ";
+        ZonedDateTime t = ZonedDateTime.now();
+        DateTimeFormatter offset = DateTimeFormatter.ofPattern("xxx");
+        String query = "SELECT to_char(max(%s), 'RRRR-MM-DD')||'T'||to_char(max(%s), 'HH24:MI:SS')||'%s' FROM %s ";
         query += "WHERE %s = '%s'";
         query = String.format(query,
                 this.datasetTable.getColumns().get("updated"),
                 this.datasetTable.getColumns().get("updated"),
+                t.format(offset),
                 this.getDatasetTable().getTableName(),
                 this.getServiceTable().getColumns().get("service_id"),
                 serviceId);
@@ -298,12 +302,14 @@ public class DatabaseHandler {
     public String getMainFeedUpdated(String serviceId) throws SQLException{
         Statement stmt = null;
         ResultSet rs = null;
-
-        String query = "SELECT to_char(%s, 'RRRR-MM-DD')||'T'||to_char(%s, 'HH24:MI:SS')||'+02:00' FROM %s WHERE %s = '%s'";
+        ZonedDateTime t = ZonedDateTime.now();
+        DateTimeFormatter offset = DateTimeFormatter.ofPattern("xxx");
+        String query = "SELECT to_char(%s, 'RRRR-MM-DD')||'T'||to_char(%s, 'HH24:MI:SS')||'%s' FROM %s WHERE %s = '%s'";
 
         query = String.format(query,
                 this.getServiceTable().getColumns().get("updated"),
                 this.getServiceTable().getColumns().get("updated"),
+                t.format(offset),
                 this.getServiceTable().getTableName(),
                 this.getServiceTable().getColumns().get("service_id"),
                 serviceId);
@@ -473,12 +479,14 @@ public class DatabaseHandler {
     public String getDatasetUpdated(String dataset) throws SQLException{
         Statement stmt = null;
         ResultSet rs = null;
-
-        String query = "SELECT to_char(%s, 'RRRR-MM-DD')||'T'||to_char(%s, 'HH24:MI:SS')||'+02:00' FROM %s WHERE %s = '%s'";
+        ZonedDateTime t = ZonedDateTime.now();
+        DateTimeFormatter offset = DateTimeFormatter.ofPattern("xxx");
+        String query = "SELECT to_char(%s, 'RRRR-MM-DD')||'T'||to_char(%s, 'HH24:MI:SS')||'%s' FROM %s WHERE %s = '%s'";
 
         query = String.format(query,
                 this.getDatasetTable().getColumns().get("updated"),
                 this.getDatasetTable().getColumns().get("updated"),
+                t.format(offset),
                 this.getDatasetTable().getTableName(),
                 this.getDatasetTable().getColumns().get("spatial_dataset_identifier_code"),
                 dataset);
@@ -689,8 +697,10 @@ public class DatabaseHandler {
     public ArrayList<DatasetFile> getFilesData(String dataset) throws SQLException{
         Statement stmt = null;
         ResultSet rs = null;
+        ZonedDateTime t = ZonedDateTime.now();
+        DateTimeFormatter offset = DateTimeFormatter.ofPattern("xxx");
         ArrayList<DatasetFile> files = new ArrayList<DatasetFile>();
-        String query = "SELECT %s, %s, %s, %s, %s, to_char(%s, 'RRRR-MM-DD')||'T'||to_char(%s, 'HH24:MI:SS')||'+02:00', %s, %s, %s, %s, %s, %s, %s, %s FROM %s WHERE %s = '%s'";
+        String query = "SELECT %s, %s, %s, %s, %s, to_char(%s, 'RRRR-MM-DD')||'T'||to_char(%s, 'HH24:MI:SS')||'%s', %s, %s, %s, %s, %s, %s, %s, %s FROM %s WHERE %s = '%s'";
 
         try{
 
@@ -702,6 +712,7 @@ public class DatabaseHandler {
                     this.getFilesTable().getColumns().get("unit_type"),
                     this.getFilesTable().getColumns().get("updated"),
                     this.getFilesTable().getColumns().get("updated"),
+                    t.format(offset),
                     this.getFilesTable().getColumns().get("spatial_dataset_identifier_code"),
                     this.getFilesTable().getColumns().get("crs_epsg"),
                     this.getFilesTable().getColumns().get("georss_type"),
@@ -1489,6 +1500,8 @@ public class DatabaseHandler {
             crsName = "ETRS89";
         }else if(epsg.equals("4326")){
             crsName = "WGS-84";
+        }else if(epsg.equals("stabilni_katastr")){
+            crsName = "Stabilní katastr";
         }
         return crsName;
     }
