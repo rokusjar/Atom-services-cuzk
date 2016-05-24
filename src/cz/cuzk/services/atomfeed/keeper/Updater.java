@@ -138,10 +138,11 @@ public class Updater {
                 logger.info("nahravam osd na FTP server");
                 OpenSearchDescription.getInstance().uploadToFTP(service.getServiceId());
 
-                logger.info("generuji index");
-                AtomIndex.getInstance().createIndex();
-                logger.info("nahravam index na FTP server");
-                AtomIndex.getInstance().uploadToFTP();
+                //uz nepotrebujeme
+//                logger.info("generuji index");
+//                AtomIndex.getInstance().createIndex();
+//                logger.info("nahravam index na FTP server");
+//                AtomIndex.getInstance().uploadToFTP();
             }
         }else{
             logger.log(Level.INFO, "Neni co aktualizovat");
