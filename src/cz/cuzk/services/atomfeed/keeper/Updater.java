@@ -432,7 +432,7 @@ public class Updater {
     }
     //------------------------------------------------------------------------------------------------------------------
     /**
-     * Na základě dataset kódu rozhodne kterou ze tříd použít.
+     * Na základě dataset kódu rozhodne kterou ze tříd xxxService použít.
      * Inicializuje její objekt a vrátí ho.
      * @param datasetCode
      * @return
@@ -458,7 +458,9 @@ public class Updater {
         }else if(themeCode.contains("DGN")){
             return new KmShpService(getSources(themeCode), themeCode, dateOfChange);
 
-        } else{
+        }else if(themeCode.contains("UHDP")){
+            return new UHDPService(getSources(themeCode), themeCode, dateOfChange);
+        }else{
             throw new UnknownDatasetException("Nalezeny dataset se nepodarilo klasifikovat.");
         }
     }
