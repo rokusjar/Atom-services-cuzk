@@ -1475,7 +1475,7 @@ public class DatabaseHandler {
             title = String.format("%s - %s", unitName, file.getFile_name());
         }
         else{
-            title = file.getFile_name() + "\\." + file.getFile_extension();
+            title = file.getFile_name() + "." + file.getFile_extension();
         }
 
         return title;
@@ -1584,6 +1584,10 @@ public class DatabaseHandler {
         }
         else if(serviceId.equals("RUIAN-CSV-HIE-ST")) {
             title = "RÚIAN csv - hierarchie prvků - stát";
+        }
+        else if(serviceId.equals("UHDP")){
+            String datum = dlsCode.split("_")[3].split("\\.")[0];
+            title = String.format("Úhrnné hodnoty druhů pozemků - %s", datum);
         }
         else{
             title = "Neznámý kód služby";

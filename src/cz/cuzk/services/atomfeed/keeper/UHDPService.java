@@ -37,7 +37,7 @@ public class UHDPService extends Service{
 
                     dFile.setFile_name(file.getName().split("\\.")[0]);
                     dFile.setFile_extension(file.getName().split("\\.")[1]);
-                    dFile.setWebPath(source.getWebPath() + "/" + dFile.getFile_name()
+                    dFile.setWebPath(source.getWebPath() + "/" + sourceDir.getName() + "/" + dFile.getFile_name()
                             + "." + dFile.getFile_extension());
                     SimpleDateFormat sdf = new SimpleDateFormat("dd.MM.yyyy:HH:mm:ss");
                     dFile.setUpdated(sdf.format(file.lastModified()));
@@ -46,7 +46,7 @@ public class UHDPService extends Service{
                     dFile.setUnit_type(source.getUnit_type());
                     dFile.setGeorss_type(source.getGeorss_type());
                     dFile.setCrs_epsg(source.getEpsg());
-                    dFile.setUnit_code(file.getName().split("\\.")[0]);
+                    dFile.setUnit_code("1");
                     dFile.setMetadata_link("xxx");
                     dFile.setService_id(this.getServiceId());
                     dFile.setFormat(source.getFormat());
@@ -76,7 +76,7 @@ public class UHDPService extends Service{
     }
 
     /**
-     * Z adresářů které se ve složce nachází vybere ten správný. Správný je ten s nejaktuálnějšími daty.
+     * Z adresářů které se ve složce nachází vybere posledni rok (adresare se jmenuji 2014 2015 atd).
      * @return
      */
     private File getRightDir(Source source){
