@@ -63,8 +63,8 @@ public class UHDPService extends Service{
     @Override
     public String dlsCode(File file) {
         String dlsCode;
-        //CZ-00025712-CUZK_1_20160401
-        dlsCode = "CZ-00025712-CUZK_" + this.getServiceId().trim() + "_1_" + file.getName().split("-")[1];
+        //CZ-00025712-CUZK_UHDP_1-20160401
+        dlsCode = "CZ-00025712-CUZK_" + this.getServiceId().trim() + "_1-" + file.getName().split("\\.")[0].split("-")[1];
         return dlsCode;
     }
 

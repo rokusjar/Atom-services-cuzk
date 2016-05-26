@@ -140,7 +140,10 @@ public class DatasetFeed extends AtomFeed{
             type = "application/x-shapefile";
         }
         else if(format.toLowerCase().equals("vfk") || format.toLowerCase().equals("vkm")){
-            type = "neexistuje";
+            type = "text/*";
+        }
+        else if(format.toLowerCase().equals("csv")){
+            type = "text/csv";
         }
         else {
             type = "neznámý";
