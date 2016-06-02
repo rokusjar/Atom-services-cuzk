@@ -133,7 +133,7 @@ public class DatasetFeed extends AtomFeed{
     private String mediaType(String format){
 
         String type = null;
-        if(format.toLowerCase().equals("gml")){
+        if(format.toLowerCase().equals("gml") || format.toLowerCase().equals("vfr")){
             type = "application/x-gmz";
         }
         else if(format.toLowerCase().equals("shp")){
