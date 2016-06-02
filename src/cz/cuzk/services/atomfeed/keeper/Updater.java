@@ -228,8 +228,13 @@ public class Updater {
 
                 for (String dlsCode : dlsCodes) {
 
-                    myFTPClient.deleteFile(this.config.getRepository().getRepository() + "/" + serviceId +
-                            "/datasetFeeds/" + dlsCode + ".xml");
+                    try {
+                        myFTPClient.deleteFile(this.config.getRepository().getRepository() + "/" + serviceId +
+                                "/datasetFeeds/" + dlsCode + ".xml");
+                    }catch (FTPException e){
+                        logger.log(Level.WARNING, "Soubor: " + this.config.getRepository().getRepository() + "/" + serviceId +
+                                "/datasetFeeds/" + dlsCode + ".xml se nepodarilo smazat");
+                    }
                     dbHandler.deleteDeleteRequest(dlsCode);
                 }
             } finally {
