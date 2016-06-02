@@ -27,7 +27,7 @@ public class UHDPService extends Service{
 
         for(Source source : getSources()){
 
-            File sourceDir = getRightDir(source);
+            File sourceDir = new File(source.getDirPath());
             for(File file : sourceDir.listFiles()){
                 if(file.isFile()){
                     if(!file.getName().split("\\.")[1].equals("csv")) {
@@ -77,6 +77,7 @@ public class UHDPService extends Service{
 
     /**
      * Z adresářů které se ve složce nachází vybere posledni rok (adresare se jmenuji 2014 2015 atd).
+     * Chceme poskytovat data i zpětně takže tuto funkci jsem vyřadil.
      * @return
      */
     private File getRightDir(Source source){
