@@ -27,10 +27,10 @@ public class DownloadServiceDeserializer implements JsonDeserializer<DownloadSer
             Source source = new Source();
             source.setDirPath(el.getAsJsonObject().get("dirPath").getAsString());
             source.setWebPath(el.getAsJsonObject().get("webPath").getAsString());
-            source.setEpsg(el.getAsJsonObject().get("epsg").getAsString());
             source.setUnit_type(el.getAsJsonObject().get("unit_type").getAsString());
             source.setGeorss_type(el.getAsJsonObject().get("georss_type").getAsString());
             source.setFormat(el.getAsJsonObject().get("format").getAsString());
+            source.setEpsg(el.getAsJsonObject().get("epsg").getAsString());
             ss.add(source);
         }
 

@@ -158,7 +158,7 @@ public class Atom {
      * @throws IOException
      */
     private static void createRunningFile() throws IOException {
-        File runningFile = new File("running.log");
+        File runningFile = new File(getJarLocation() + "/running.log");
         //File runningFile = new File(getJarLocation() + "running.log");
         runningFile.createNewFile();
     }
@@ -167,7 +167,7 @@ public class Atom {
      * Smaže soubor, který značí že program běží.
      */
     private static void deleteRunningFile(){
-        File runningFile = new File("running.log");
+        File runningFile = new File(getJarLocation() + "/running.log");
         //File runningFile = new File(getJarLocation() + "running.log");
         if(runningFile.exists()){
             runningFile.delete();
@@ -180,7 +180,7 @@ public class Atom {
      */
     private static boolean isRunning(){
         Boolean result = true;
-        File runningFile = new File("running.log");
+        File runningFile = new File(getJarLocation() + "/running.log");
         //File runningFile = new File(getJarLocation() + "running.log");
 
         if(runningFile.exists()){

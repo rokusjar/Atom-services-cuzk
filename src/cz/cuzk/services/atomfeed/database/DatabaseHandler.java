@@ -11,7 +11,6 @@ import java.time.LocalDateTime;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
-import java.util.Date;
 
 //----------------------------------------------------------------------------------------------------------------------
 /**
@@ -36,6 +35,7 @@ public class DatabaseHandler {
     private Table abstraktTable = null;
     private Table datasetUpdateTable = null;
     private Table datasetDeleteTable = null;
+    private Table statsTable = null;
     private Table georssStat = null;
     private Table georssobce = null;
     private Table georsskp = null;
@@ -70,6 +70,7 @@ public class DatabaseHandler {
             this.setAbstraktTable(this.getConfig().getAbstraktTable());
             this.setDatasetUpdateTable(this.getConfig().getDatasetUpdateTable());
             this.setDatasetDeleteTable(this.getConfig().getDatasetDeleteTable());
+            this.setStatsTable(this.getConfig().getStatsTable());
             this.setGeorssStat(this.getConfig().getGeorssStat());
             this.setGeorssobce(this.getConfig().getGeorssObce());
             this.setGeorssku(this.getConfig().getGeorssKu());
@@ -886,7 +887,7 @@ public class DatabaseHandler {
                         "WHERE %s = '%s' AND %s IS NULL AND %s = to_date('%s', 'DD.MM.RRRR:HH24:MI:SS')";
 
         SimpleDateFormat sdf = new SimpleDateFormat("dd.MM.yyyy:HH:mm:ss");
-        String currentDate = sdf.format(new Date());
+        String currentDate = sdf.format(new java.util.Date());
 
         //LocalDateTime cTime = LocalDateTime.now();
         //DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd.MM.YYYY:HH:mm:ss");
@@ -2020,6 +2021,43 @@ public class DatabaseHandler {
 
     }
     //------------------------------------------------------------------------------------------------------------------
+    /**
+     * Vlozi statistiky o poctu aktualizovanych datasetu do tabulky atom_stats.
+     * @param deleted
+     * @param neew
+     * @param updated
+     * @param service
+     * @throws SQLException
+     */
+    public void insertStatistics(int deleted, int neew, int updated, String service) throws SQLException {
+
+        Statement stmt = null;
+        String insert = "INSERT INTO %s (%s, %s, %s, %s, %s) " +
+                "VALUES ('%s', to_date('%s', 'DD.MM.RRRR:HH24:MI:SS'), %s, %s, %s)";
+
+        SimpleDateFormat sdf = new SimpleDateFormat("dd.MM.yyyy:HH:mm:ss");
+        String currentDate = sdf.format(new java.util.Date());
+
+        try{
+            stmt = conn.createStatement();
+            insert = String.format(insert,
+                    this.getStatsTable().getTableName(),
+                    this.getStatsTable().getColumns().get("service_id"),
+                    this.getStatsTable().getColumns().get("datum"),
+                    this.getStatsTable().getColumns().get("aktualizovane"),
+                    this.getStatsTable().getColumns().get("nove"),
+                    this.getStatsTable().getColumns().get("smazane"),
+                    service,
+                    currentDate,
+                    updated, neew, deleted);
+
+            stmt.executeUpdate(insert);
+        }
+        finally {
+            try{ if(stmt != null) stmt.close(); }catch (Exception e){}
+        }
+    }
+    //------------------------------------------------------------------------------------------------------------------
     public String getConnectionString() {
         return connectionString;
     }
@@ -2123,6 +2161,15 @@ public class DatabaseHandler {
     public void setDatasetDeleteTable(Table datasetDeleteTable) {
         this.datasetDeleteTable = datasetDeleteTable;
     }
+
+    public Table getStatsTable() {
+        return statsTable;
+    }
+
+    public void setStatsTable(Table statsTable) {
+        this.statsTable = statsTable;
+    }
+
     //------------------------------------------------------------------------------------------------------------------
     //PRIVATE METHODS
     //------------------------------------------------------------------------------------------------------------------
