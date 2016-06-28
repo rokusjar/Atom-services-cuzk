@@ -33,13 +33,10 @@ public class Atom {
     private static Logger logger = null;
     private static FileHandler fh = null;
     private static URL location = Atom.class.getProtectionDomain().getCodeSource().getLocation();
-    private static final Boolean JAR = true; //pokud chci debugovat tak false
     //------------------------------------------------------------------------------------------------------------------
     public static void main(String[] args){
 
         Updater updater = null;
-        //Ja jsem master branch
-
         try {
             //Aby program nemohl bezet vicekrat
             if(!isRunning()){
@@ -51,9 +48,9 @@ public class Atom {
 
             System.out.println("Program atom spusten.");
 
-            createLogDir(JAR);
+            createLogDir();
             logger = Logger.getAnonymousLogger();
-            fh = createFileHandlerForLogging(JAR);
+            fh = createFileHandlerForLogging();
             SimpleFormatter formatter = new SimpleFormatter();
             fh.setFormatter(formatter);
             logger.addHandler(fh);
@@ -123,17 +120,10 @@ public class Atom {
      * Pokud adresář logs neexistuje, tak ho vytvoří.
      * @param jar nastavit na true pokud bude program spoustěn z jaru, pokud bude spoustěn jinak tak false
      */
-    private static void createLogDir(Boolean jar){
-        if(jar) {
-            File logDir = new File(getJarLocation() + "logs\\" + cDate());
-            if(!logDir.exists()){
-                logDir.mkdirs();
-            }
-        }else{
-            File logDir = new File("logs\\" + cDate());
-            if(!logDir.exists()){
-                logDir.mkdirs();
-            }
+    private static void createLogDir(){
+        File logDir = new File(getJarLocation() + "logs\\" + cDate());
+        if(!logDir.exists()) {
+            logDir.mkdirs();
         }
     }
     //------------------------------------------------------------------------------------------------------------------
@@ -141,13 +131,9 @@ public class Atom {
      * Vytvoří file handler pro logger
      * @param jar nastavit na true pokud bude program spoustěn z jaru, pokud bude spoustěn jinak tak false
      */
-    private static FileHandler createFileHandlerForLogging(Boolean jar) throws IOException {
+    private static FileHandler createFileHandlerForLogging() throws IOException {
         FileHandler fh = null;
-        if(jar) {
-            fh = new FileHandler(getJarLocation() + "logs\\" + cDate() + "\\" + "atom_" + cTime() + ".log");
-        }else{
-            fh = new FileHandler("logs\\" + cDate() + "\\" + "atom_" + cTime() + ".log");
-        }
+        fh = new FileHandler(getJarLocation() + "logs\\" + cDate() + "\\" + "atom_" + cTime() + ".log");
         return fh;
     }
     //------------------------------------------------------------------------------------------------------------------

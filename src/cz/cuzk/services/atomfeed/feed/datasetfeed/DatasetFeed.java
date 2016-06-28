@@ -133,14 +133,17 @@ public class DatasetFeed extends AtomFeed{
     private String mediaType(String format){
 
         String type = null;
-        if(format.toLowerCase().equals("gml")){
+        if(format.toLowerCase().equals("gml") || format.toLowerCase().equals("vfr")){
             type = "application/x-gmz";
         }
         else if(format.toLowerCase().equals("shp")){
             type = "application/x-shapefile";
         }
         else if(format.toLowerCase().equals("vfk") || format.toLowerCase().equals("vkm")){
-            type = "neexistuje";
+            type = "text/*";
+        }
+        else if(format.toLowerCase().equals("csv")){
+            type = "text/csv";
         }
         else {
             type = "neznámý";

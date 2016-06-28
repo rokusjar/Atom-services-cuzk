@@ -144,6 +144,6 @@ public abstract class AtomFeed {
         LocalDateTime cTime = LocalDateTime.now();
         DateTimeFormatter formatter1 = DateTimeFormatter.ofPattern("dd.MM.YYYY");
         DateTimeFormatter formatter2 = DateTimeFormatter.ofPattern("HH:mm:ss");
-        return cTime.format(formatter1) + "T" + cTime.format(formatter2) + "+1:00";
+        return cTime.format(formatter1) + "T" + cTime.format(formatter2) + "+01:00";
     }
 }

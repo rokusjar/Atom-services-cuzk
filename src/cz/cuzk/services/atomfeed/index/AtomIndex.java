@@ -110,7 +110,7 @@ public class AtomIndex {
         File index = new File(this.config.getRepository().getTempRepository() + "/index.html");
 
         if(index.exists()) {
-            ftpClient.upload(new File(this.config.getRepository().getTempRepository() + "/index.html"), "atom");
+            ftpClient.upload(index, this.config.getRepository().getRepository());
         }else{
             System.out.println(index.getAbsolutePath() + " nenalezen");
         }
@@ -265,7 +265,11 @@ public class AtomIndex {
         String category;
 
         if(serviceId.contains("KM")) category = "KM";
-        else if(serviceId.equals("AU") || serviceId.equals("CP") || serviceId.equals("BU") || serviceId.equals("AD")) category = "INSPIRE";
+        else if(serviceId.equals("AU") || serviceId.equals("CP") ||
+                serviceId.equals("BU") || serviceId.equals("AD") ||
+                serviceId.equals("GGS")){
+            category = "INSPIRE";
+        }
         else if(serviceId.contains("RUIAN")) category = "RUIAN";
         else if(serviceId.contains("GMPL")) category = "GMPL";
         else category = "OSTATNI";

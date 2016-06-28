@@ -208,7 +208,7 @@ public class OpenSearchDescription {
         File osd = new File(this.config.getRepository().getTempRepository() + "/OSD-" + service + ".xml");
 
         if(osd.exists()) {
-            ftpClient.upload(osd, "atom/" + service);
+            ftpClient.upload(osd, this.config.getRepository().getRepository() + "/" + service);
         }else{
             System.out.println(osd.getAbsolutePath() + " nenalezen");
         }

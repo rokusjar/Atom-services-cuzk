@@ -1486,7 +1486,7 @@ public class DatabaseHandler {
             title = String.format("%s - %s", unitName, file.getFile_name());
         }
         else{
-            title = file.getFile_name() + "\\." + file.getFile_extension();
+            title = file.getFile_name() + "." + file.getFile_extension();
         }
 
         return title;
@@ -1597,6 +1597,10 @@ public class DatabaseHandler {
         }
         else if(serviceId.equals("RUIAN-CSV-HIE-ST")) {
             title = "RÚIAN csv - hierarchie prvků - stát";
+        }
+        else if(serviceId.equals("UHDP")){
+            String datum = dlsCode.split("-")[3];
+            title = String.format("Úhrnné hodnoty druhů pozemků - %s", datum);
         }
         else{
             title = "Neznámý kód služby";
@@ -1912,59 +1916,37 @@ public class DatabaseHandler {
         }
     }
     //------------------------------------------------------------------------------------------------------------------
-    public String getBBox(String datasetCode) throws SQLException {
-        String unitCode = datasetCode.split("_")[2];
-        String serviceCode = datasetCode.split("_")[1];
-        String result = "polygon nenalezen";
+    /**
+     * Vrati typ jednotky datasetu: k.u. k.p. stat nebo obec
+     * Kdyz vrati null znamena to ze select do databaze nic nenasel.
+     * @param datasetCode
+     * @return kod nebo null
+     * @throws SQLException
+     */
+    private String getUnitTypeByDatasetCode(String datasetCode) throws SQLException {
 
+        String unitType = null;
         Statement stmt = null;
         ResultSet rs = null;
-        String select = "SELECT %s FROM %s WHERE %s = %s";
+        String select = "";
+        select += "SELECT %s FROM %s d ";
+        select += "JOIN %s f ON(d.%s = f.%s) ";
+        select += "WHERE d.%s = '%s'";
 
-        try {
+        try{
             stmt = this.conn.createStatement();
-            if (serviceCode.contains("KP")) {
-                select = String.format(select,
-                        this.getGeorsskp().getColumns().get("wgs84"),
-                        this.getGeorsskp().getTableName(),
-                        this.getGeorsskp().getColumns().get("kod"),
-                        unitCode);
-                rs = stmt.executeQuery(select);
-                if(rs.next()) {
-                    result = rs.getString(1);
-                }
-            } else if (serviceCode.contains("KU") || serviceCode.equals("CP")) {
-                select = String.format(select,
-                        this.getGeorssku().getColumns().get("wgs84"),
-                        this.getGeorssku().getTableName(),
-                        this.getGeorssku().getColumns().get("kod"),
-                        unitCode);
-                rs = stmt.executeQuery(select);
-                if(rs.next()) {
-                    result = rs.getString(1);
-                }
-            } else if (serviceCode.equals("AD") || serviceCode.equals("BU")) {
-                select = String.format(select,
-                        this.getGeorssobce().getColumns().get("wgs84"),
-                        this.getGeorssobce().getTableName(),
-                        this.getGeorssobce().getColumns().get("kod"),
-                        unitCode);
-                rs = stmt.executeQuery(select);
-                if(rs.next()) {
-                    result = rs.getString(1);
-                }
-            } else if (serviceCode.equals("AU")) {
-                select = String.format(select,
-                        this.getGeorssStat().getColumns().get("wgs84"),
-                        this.getGeorssStat().getTableName(),
-                        this.getGeorssStat().getColumns().get("kod"),
-                        unitCode);
-                rs = stmt.executeQuery(select);
-                if(rs.next()) {
-                    result = rs.getString(1);
-                }
-            } else{
-                result = "";
+            select = String.format(select,
+                    this.getFilesTable().getColumns().get("unit_type"),
+                    this.getDatasetTable().getTableName(),
+                    this.getFilesTable().getTableName(),
+                    this.getDatasetTable().getColumns().get("spatial_dataset_identifier_code"),
+                    this.getFilesTable().getColumns().get("spatial_dataset_identifier_code"),
+                    this.getDatasetTable().getColumns().get("spatial_dataset_identifier_code"),
+                    datasetCode);
+
+            rs = stmt.executeQuery(select);
+            if(rs.next()){
+                unitType = rs.getString(1);
             }
         }
         finally {
@@ -1972,7 +1954,70 @@ public class DatabaseHandler {
             try{ if(stmt != null) stmt.close(); }catch (Exception e){}
         }
 
-        return result;
+        return unitType;
+    }
+    //------------------------------------------------------------------------------------------------------------------
+    /**
+     * K datasetu priradi spravny BBOX.
+     * @param datasetCode
+     * @return
+     * @throws SQLException
+     */
+    public String getBBox(String datasetCode) throws SQLException {
+        String unitCode = datasetCode.split("_")[2].split("-")[0];
+        String unitType = getUnitTypeByDatasetCode(datasetCode);
+        String result = "";
+
+        if(unitType == null) {
+            return result;
+        }
+
+        Statement stmt = null;
+        ResultSet rs = null;
+        String select = "SELECT %s FROM %s WHERE %s = %s";
+
+        if(unitType.equals("kp")) {
+            select = String.format(select,
+                    this.getGeorsskp().getColumns().get("wgs84"),
+                    this.getGeorsskp().getTableName(),
+                    this.getGeorsskp().getColumns().get("kod"),
+                    unitCode);
+        }
+        if(unitType.equals("ku")) {
+            select = String.format(select,
+                    this.getGeorssku().getColumns().get("wgs84"),
+                    this.getGeorssku().getTableName(),
+                    this.getGeorssku().getColumns().get("kod"),
+                    unitCode);
+        }
+        if(unitType.equals("stat")) {
+            select = String.format(select,
+                    this.getGeorssStat().getColumns().get("wgs84"),
+                    this.getGeorssStat().getTableName(),
+                    this.getGeorssStat().getColumns().get("kod"),
+                    unitCode);
+        }
+        if(unitType.equals("obec")) {
+            select = String.format(select,
+                    this.getGeorssobce().getColumns().get("wgs84"),
+                    this.getGeorssobce().getTableName(),
+                    this.getGeorssobce().getColumns().get("kod"),
+                    unitCode);
+        }
+
+        try {
+            stmt = this.conn.createStatement();
+            rs = stmt.executeQuery(select);
+            if(rs.next()) {
+                result = rs.getString(1);
+            }
+            return result;
+        }
+        finally {
+            try{ if(rs != null) rs.close(); }catch (Exception e){}
+            try{ if(stmt != null) stmt.close(); }catch (Exception e){}
+        }
+
     }
     //------------------------------------------------------------------------------------------------------------------
     public String getConnectionString() {

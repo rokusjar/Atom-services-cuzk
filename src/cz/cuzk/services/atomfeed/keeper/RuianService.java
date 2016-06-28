@@ -116,11 +116,11 @@ public class RuianService extends Service {
             if(fileName.contains("strukt")){
                 unitCode = "1";
             }
-            else if(fileName.split("_").length == 4){
-                unitCode = fileName.split("_")[2];
-            }
-            else if(fileName.split("_").length == 3){
+            else if(fileName.contains("_OB_ADR_csv")){ //stat
                 unitCode = "1";
+            }
+            else if(fileName.split("_").length == 4){ //obec
+                unitCode = fileName.split("_")[2];
             }
         }else {
 
